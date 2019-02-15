@@ -1,5 +1,6 @@
-const { app, BrowserWindow } = require('electron')
-const { autoUpdater } = require("electron-updater");
+const { app, BrowserWindow, ipcMain } = require('electron')
+const { autoUpdater } = require('electron-updater');
+const path = require('path');
 
 let win = undefined;
 
@@ -9,7 +10,8 @@ function createWindow () {
   	width: 800, 
   	height: 600,
     webPreferences: {
-      nodeIntegration: false
+      nodeIntegration: false,
+      preload: path.resolve('preload.js')
     }
   });
 
@@ -55,11 +57,12 @@ autoUpdater.on('download-progress', (progressObj) => {
 
 autoUpdater.on('update-downloaded', (info) => {
   sendStatusToWindow('Update downloaded');
+  autoUpdater.quitAndInstall();
 });
 
 function sendStatusToWindow(text) {
   console.log(text);
-  //win.webContents.send('message', text);
+  win.webContents.send('update-status', text)
 }
 
 /* MAC OS */
@@ -81,4 +84,3 @@ app.on('activate', () => {
 });
 
 
-autoUpdater.checkForUpdates();
