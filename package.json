@@ -1,11 +1,14 @@
 {
   "name": "likesports-pos",
   "version": "1.0.0",
-  "description": "",
+  "description": "test",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "publish": "build --linux --win -p always"
   },
   "repository": {
     "type": "git",
@@ -18,7 +21,20 @@
   },
   "homepage": "https://gitlab.com/mightyJol-lbdf/likesports#readme",
   "dependencies": {
-    "electron": "^4.0.4",
+    "electron-updater": "^4.0.6"
+  },
+  "devDependencies": {
+    "electron": "^4.0.5",
+    "electron-builder": "^20.38.5",
     "yarn": "^1.13.0"
+  },
+  "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "mightyjol",
+        "repo": "likesports-pos"
+      }
+    ]
   }
 }
