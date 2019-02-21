@@ -1,5 +1,5 @@
 provider: github
 owner: mightyjol
 repo: likesports-pos
-private: true,
-token: 229594e3b66bd39473b28a0cb0b8ba6326e2dc3e
+private: true
+token: a02e345792b99f452c649d587beef6c43cfca056

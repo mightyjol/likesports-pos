@@ -1,6 +1,12 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
+const os = require('os');
+const isDev = require('electron-is-dev');
+
+const config = require('./config/default');
+const currentOs = os.type();
+const isLinux = currentOs == 'Linux';
 
 let win = undefined;
 
@@ -11,12 +17,12 @@ function createWindow () {
   	height: 600,
     webPreferences: {
       nodeIntegration: false,
-      preload: path.resolve('preload.js')
+      preload: path.join(__dirname, 'preload.js')
     }
   });
 
-  win.loadFile('index.html');
-  win.webContents.openDevTools();
+  win.loadFile('./dist/index.html');
+  if(isDev) win.webContents.openDevTools();
 
   win.on('closed', () => {
     win = null;
@@ -25,15 +31,22 @@ function createWindow () {
 
 app.on('ready', function(){
   createWindow();
+});
+
+/******************/
+/*      IPC       */
+/******************/
+
+ipcMain.on('checkForUpdate', () =>{
   autoUpdater.checkForUpdates();
 });
 
-///////////////////
-// Auto updater //
-///////////////////
+/******************/
+/*  Auto updater  */
+/******************/
 
 autoUpdater.on('checking-for-update', () => {
-  sendStatusToWindow('Checking for update...');
+  sendStatusToWindow('Recherche de mise à jour');
 })
 
 autoUpdater.on('update-available', (info) => {
@@ -41,7 +54,7 @@ autoUpdater.on('update-available', (info) => {
 })
 
 autoUpdater.on('update-not-available', (info) => {
-  sendStatusToWindow('Update not available.');
+  sendStatusToWindow('Pas de mise à jour', true);
 })
 
 autoUpdater.on('error', (err) => {
@@ -60,9 +73,11 @@ autoUpdater.on('update-downloaded', (info) => {
   autoUpdater.quitAndInstall();
 });
 
-function sendStatusToWindow(text) {
-  console.log(text);
-  win.webContents.send('update-status', text)
+function sendStatusToWindow(text, isReady = false) {
+  win.webContents.send('updateStatusText', text);
+  if(isReady){
+     win.webContents.send('updateStatus', true); 
+  }
 }
 
 /* MAC OS */
