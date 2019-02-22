@@ -3,7 +3,11 @@ let config = {
 	apiRoutes: {
 		base: 'http://localhost:5000/web-pos-a3642/us-central1/api',
 		ping: '/',
-		login: '/login'
+		login: '/login',
+		user: {
+			current: '/security/user/current',
+			logout: '/security/user/logout'
+		}
 	},
 	support: {
 		email: 'support@webcreators.be',

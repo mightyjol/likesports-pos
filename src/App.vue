@@ -15,8 +15,9 @@
 	    	</router-link>
 	    </nav>
 	    <keep-alive>
-	    	<router-view />
+	    	<router-view v-if="$route.meta.keepAlive" />
 	    </keep-alive>
+	    <router-view v-if="!$route.meta.keepAlive" /> 
 	</div>
 </template>
 
@@ -25,7 +26,6 @@
 export default {
 	data: () => {
 		return {
-			
 		}
 	}
 }

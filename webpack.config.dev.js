@@ -5,6 +5,7 @@ const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin  = require('mini-css-extract-plugin');
+
 const path = require('path');
 
 function resolve (dir) {
@@ -15,6 +16,7 @@ function resolve (dir) {
 module.exports = {
   mode: 'development',
   entry: [
+    '@babel/polyfill',
     './src/app.js'
   ],
   devServer: {
@@ -47,7 +49,9 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        use: 'babel-loader'
+        use: [
+          'babel-loader'
+        ]
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,

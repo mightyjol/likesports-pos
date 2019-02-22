@@ -23,39 +23,25 @@ export default {
 		}
 	},
 	methods: {
-      	login: function() {
-
-		},
-		checkData: function() {
+		checkData: async function() {
 			//reset error
 			this.error = false;
-
+			this.errorMessage = false;
+			
 			//check if email is right
 			const email = this.email;
 			//check if password is right
 			const password = this.password;
 
-			let { apiRoutes } = this.getConfig();
-			let urlLogin = apiRoutes.base + apiRoutes.login;
-
-			//send to login
-			this.$http.post(urlLogin, {
-				email: email,
-				password: password
-			})
-			.then( data => {
-				if(data.status){
-					this.$router.push('/');
-				}
-				else{
-					this.error = true;
-					this.errorMessage = data.error;
-				}
-			})
-			.catch( e => {
-				console.error(e);
-				alert(this.call911());
-			});
+			let result = await this.login(email, password);
+			if(result === true){
+				this.$router.push('/');
+			}
+			else{
+				console.error(result);
+				this.error = result.error || false;
+				this.errorMessage = result.errorMessage || ''
+			}
 		}
 	}
 }
