@@ -5,6 +5,8 @@ const os = require('os');
 const isDev = require('electron-is-dev');
 
 const config = require('./config/default');
+process.env.NODE_ENV = config.env;
+
 const currentOs = os.type();
 const isLinux = currentOs == 'Linux';
 
