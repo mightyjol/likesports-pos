@@ -28,19 +28,14 @@ export default {
 			this.error = false;
 			this.errorMessage = false;
 			
-			//check if email is right
 			const email = this.email;
-			//check if password is right
 			const password = this.password;
 
 			let result = await this.login(email, password);
-			if(result === true){
-				this.$router.push('/');
-			}
-			else{
+			if(result !== true){
 				console.error(result);
-				this.error = result.error || false;
-				this.errorMessage = result.errorMessage || ''
+				this.error = true;
+				this.errorMessage = result.error || ''
 			}
 		}
 	}

@@ -1,17 +1,19 @@
 let config = {
-	env: 'dev',
 	apiRoutes: {
 		base: 'http://localhost:5000/web-pos-a3642/us-central1/api',
 		ping: '/',
-		login: '/login',
 		user: {
-			current: '/security/user/current',
-			logout: '/security/user/logout'
+			passwordUpdate: '/security/password/update'
 		}
 	},
 	support: {
 		email: 'support@webcreators.be',
 		phone: ''
+	},
+	firebase:{
+		apiKey: "AIzaSyDciuyQz7mIs0ckZHXJGpQNM6zIOPhhXWc",
+		databaseURL: "https://web-pos-a3642.firebaseio.com",
+		projectId: "web-pos-a3642"
 	}
 };
 

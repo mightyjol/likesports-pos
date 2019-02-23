@@ -17,7 +17,7 @@ export default {
 			if(data == true){
 				self.updateText('Programme à jour');
 				setTimeout(() => {
-					self.$router.replace('/login');
+					self.logout();
 				}, 500)
 			}
 		})

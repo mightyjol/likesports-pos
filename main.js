@@ -26,6 +26,11 @@ function createWindow () {
   win.loadFile('./dist/index.html');
   if(isDev) win.webContents.openDevTools();
 
+  win.webContents.on('crashed', (e) => {
+    app.relaunch()
+    win.webContents.send('isQuitting', true);
+  });
+  
   win.on('closed', () => {
     win = null;
   })
@@ -35,12 +40,25 @@ app.on('ready', function(){
   createWindow();
 });
 
+app.on('before-quit', function(){
+  win.webContents.send('isQuitting', true);
+});
+
 /******************/
 /*      IPC       */
 /******************/
 
 ipcMain.on('checkForUpdate', () =>{
   autoUpdater.checkForUpdates();
+});
+
+ipcMain.on('crash', (event, message) => {
+  console.error('fake crash');
+  process.crash();
+});
+
+ipcMain.on('canQuit', (event, message) => {
+  app.exit(0)
 });
 
 /******************/
