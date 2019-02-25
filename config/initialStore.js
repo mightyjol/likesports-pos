@@ -4,12 +4,14 @@ let initialStore = {
 		uid: '',
 		email: ''
 	},
-	prestashop: {
-		domain: "",
-        key: "",
-        routes: {
-        	ping: '/'
-        }
+	settings: {
+		prestashop: {
+			domain: "",
+        	key: "",
+        	routes: {
+        		ping: '/'
+        	}
+		}
 	},
 	inventoryMetadata: {
 		count: 0,
@@ -18,3 +20,5 @@ let initialStore = {
 };
 
 module.exports = initialStore;
+
+//todo move prestashop routes outside of settings

@@ -30,13 +30,14 @@ export default {
 
 			//import brands
 			if(this.checkboxes.bLoadBrands){
-				this.$http.get(this.prestashopBuildBaseUrl() + '/manufacturers?display=[id,name,active]' + '&ws_key=' + this.$store.prestashop.key)
+				this.$http.get(this.prestashopBuildBaseUrl() + '/manufacturers?display=[id,name,active]' + '&ws_key=' + 
+					this.$root.store.settings.prestashop.key)
 				.then(data => {
 					let xml = data.body;
 					let json = convert.xml2js(xml, {compact: true});
 					
 					let batch = this.$db.batch();
-					let base = this.$store.user.client.collection('manufacturer');
+					let base = this.$root.store.user.client.collection('manufacturer');
 
 					for(let m of json.prestashop.manufacturers.manufacturer){
 						console.error(m)
@@ -67,13 +68,14 @@ export default {
 			}
 
 			if(this.checkboxes.bLoadProducts){
-				this.$http.get(this.prestashopBuildBaseUrl() + '/products?display=full&limit=10' + '&ws_key=' + this.$store.prestashop.key)
+				this.$http.get(this.prestashopBuildBaseUrl() + '/products?display=full&limit=10' + '&ws_key=' + 
+					this.$root.store.settings.prestashop.key)
 				.then(data => {
 					let xml = data.body;
 					let json = convert.xml2js(xml, {compact: true});
 					
 					let batch = this.$db.batch();
-					let base = this.$store.user.client.collection('product');
+					let base = this.$root.store.user.client.collection('product');
 
 					for(let p of json.prestashop.products.product){
 						console.error(p)

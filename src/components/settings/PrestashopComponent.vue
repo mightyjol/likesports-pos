@@ -7,8 +7,8 @@
 		<table>
 			<tr>
 				<td>
-					<input type="text" v-model="domain" placeholder="prestashop domain" v-on:input="webserviceUpdate"><br>
-					<input type="text" v-model="key" placeholder="prestashop api key" v-on:input="webserviceUpdate">
+					<input type="text" v-model="prestashop.domain" placeholder="prestashop domain" v-on:input="webserviceUpdate"><br>
+					<input type="text" v-model="prestashop.key" placeholder="prestashop api key" v-on:input="webserviceUpdate">
 				</td>
 				<td v-if="bIsWebserviceUpdated">
 					<button v-on:click="pingAndUpdate()">
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-const convert = require('xml-js');
+//TODO refactor this mess
 import PrestashopImportComponent from './PrestashopImportComponent.vue'
 
 export default {
@@ -45,15 +45,15 @@ export default {
 	},
 	created: function () {
 		//check if prestashop is properly linked
-		this.oldDomain = this.domain;
-		this.oldKey = this.key;
+		this.oldDomain = this.prestashop.domain;
+		this.oldKey = this.prestashop.key;
 
 		if(this.isWebserviceConfigured) this.ping();
 	},
 	methods: {
 		ping: async function(showError = false){
 			this.bIsPingSuccessfull = false;
-			let result = await this.prestashopPing(this.domain, this.key);
+			let result = await this.prestashopPing(this.prestashop.domain, this.prestashop.key);
 
 			if(showError && !result){
 				this.errorMessage = 'une erreur s\'est produite'
@@ -67,13 +67,11 @@ export default {
 		pingAndUpdate:async function(){
 			await this.ping(true);
 			if(this.bIsWebserviceUp){
-				this.$store.user.client.update({
+				this.$root.store.user.client.update({
 					"settings.prestashop.domain": domain,
 					"settings.prestashop.key": key
 				})
 				.then(() => {
-					this.$store.prestashop.domain = domain;
-					this.$store.prestashop.key = key;
 					this.bIsWebserviceUp = true;
 				})
 				.catch(e => {
@@ -97,6 +95,9 @@ export default {
 	computed: {
 		isWebserviceConfigured: function(){
 			return this.key != '' && this.domain != '' && !this.bIsWebserviceUpdated;
+		},
+		prestashop: function(){
+			return this.$root.store.settings.prestashop
 		}
 	},
 	data: function () {
@@ -105,8 +106,6 @@ export default {
 			bIsWebserviceUp: false,
 			bIsWebserviceUpdated: false,
 			bIsPingSuccessfull: false,
-			key: this.$store.prestashop.key,
-			domain: this.$store.prestashop.domain,
 			oldKey: '',
 			oldDomain: ''
 		}

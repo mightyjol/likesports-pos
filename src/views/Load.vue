@@ -23,22 +23,26 @@ export default {
 
  		this.$db.collection('user').doc(userUid)
  		.onSnapshot(doc => {
- 			console.error('user updated')
+ 			console.log('user updated');
+ 			 
  			let data = doc.data();
+ 			if(this.$root.store.user.client_name == data.client_name){
+ 				return this.logout();
+ 			}
  			//add data to store
- 			console.error(this.$root.store);
+ 			
  			this.$root.store.user = data;
- 			console.error('test', this.$root.store.user)
+ 			 
 	      	//this is double checked server-side anyways
 			if('admin' in data.roles){
 				this.$root.store.user.isAdmin = true;
 			}
 
-			console.error(this.$root.store);
 			if(this.bIsSyncing){
-				console.error(this.bIsSyncing);
 				this.loadSettings();
 			}
+
+
  		});	 
 	},
 	methods: {
@@ -47,17 +51,19 @@ export default {
 			if(this.bAllDone){
 				//skipping things
 				this.bIsSyncing = false;
-				this.$router.replace('/');
+				this.$router.replace('settings');
 			}
 		},
 		loadSettings: function(){
-			console.error('settings updated')
+			console.log('settings updated')
 			this.$root.store.user.client
 	 		.onSnapshot(doc => {
 			    if (doc.exists) {
 			        let data = doc.data();
 			        //add data to store
-			        this.$root.store.settings = data
+			        this.$root.store.settings.prestashop.domain = data.settings.prestashop.domain
+			        this.$root.store.settings.prestashop.key = data.settings.prestashop.key
+
 			        if(this.$route.name === 'load'){
 		 				this.bIsSettingsLoaded = true;
 				        this.checkIfDone();
@@ -67,6 +73,7 @@ export default {
 			        	this.errorSettings = "No such document!";
 			        }
 			    }
+			    console.log('store' , this.$root.store);
 			},
 			e => {
 				if(this.$route.name === 'load'){
