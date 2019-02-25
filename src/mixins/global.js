@@ -2,7 +2,8 @@ const initialStore = require('./../../config/initialStore.js')
 const config = require ('./../../config/default.js')
 const apiRoutes = config.apiRoutes
 
-const security = require('./securityMixins.js');
+const security = require('./security.js');
+const prestashop = require('./prestashop.js');
 
 setBearerToken = function(token){
   return {
@@ -15,16 +16,8 @@ setBearerToken = function(token){
 //todo refactor more -> create the prestashop wrapper
 let mixins = {
   methods: {
-    getCurrentUserInfo: function(){
-      return this.$firebase.auth().currentUser;   
-    },
-    getAllData: function(){
-      this.$store.user = this.$firebase.auth().currentUser
-      // get settings
-      // get inventory
-      // get orders
-    },
     closeListener: function(){
+      //console.error(this)
       let self = this;
       window.onbeforeunload = async(e) => {
         console.log('I do not want to be closed')
@@ -34,6 +27,8 @@ let mixins = {
         ipc.send('canQuit', true);
       }
     },
+    prestashopBuildBaseUrl: prestashop.buildBaseUrl,
+    prestashopPing: prestashop.ping,
     authListener: security.authListener,
     updatePassword: security.updatePassword,
     login: security.login,

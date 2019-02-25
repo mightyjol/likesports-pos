@@ -1,11 +1,15 @@
 let initialStore = {
 	isLoggedIn: false,
 	user: {
+		uid: '',
 		email: ''
 	},
 	prestashop: {
-		domain: "likesports.eu",
-        key: "KYCXHYIDLAUXQQIGT6479Y9GS8ID1KHJ"
+		domain: "",
+        key: "",
+        routes: {
+        	ping: '/'
+        }
 	}
 };
 

@@ -2,8 +2,8 @@ let config = {
 	apiRoutes: {
 		base: 'http://localhost:5000/web-pos-a3642/us-central1/api',
 		ping: '/',
-		user: {
-			passwordUpdate: '/security/password/update'
+		prestashop: {
+			updateSettings: '/prestashop/settings/update'
 		}
 	},
 	support: {

@@ -30,7 +30,9 @@
     "firebase-functions": "^2.2.0",
     "vue": "^2.6.6",
     "vue-resource": "^1.5.1",
-    "vue-router": "^3.0.2"
+    "vue-router": "^3.0.2",
+    "vue-toasted": "^1.1.26",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@babel/core": "^7.3.3",

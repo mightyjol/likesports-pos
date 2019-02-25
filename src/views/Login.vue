@@ -33,7 +33,6 @@ export default {
 
 			let result = await this.login(email, password);
 			if(result !== true){
-				console.error(result);
 				this.error = true;
 				this.errorMessage = result.error || ''
 			}

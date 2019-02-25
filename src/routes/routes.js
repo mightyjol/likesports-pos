@@ -1,6 +1,7 @@
 import App from './../App.vue'
 import Update from './../views/Update.vue'
 import Login from './../views/Login.vue'
+import Load from './../views/Load.vue'
 import Home from './../views/Home.vue'
 import Settings from './../views/Settings.vue'
 import UserSettingsComponent from './../components/settings/UserComponent.vue'
@@ -16,13 +17,21 @@ export default [
     }
 	},
 	{ 
-		path: '/login',
-		name: 'login', 
-		component: Login,
+    path: '/login',
+    name: 'login', 
+    component: Login,
     meta: {
       keepAlive: false
     }
-	},
+  },
+  { 
+    path: '/load',
+    name: 'load', 
+    component: Load,
+    meta: {
+      keepAlive: false
+    }
+  },
 	{ 
 		path: '/',
 		name: 'app',

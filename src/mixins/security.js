@@ -55,13 +55,16 @@ module.exports.updatePassword = async function(newPassword){
 
 module.exports.authListener = function(){
   let self = this
+  this.logout();
   this.$firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       // User is signed in.
-      self.$store.isLoggedIn = true;
-      self.$router.replace('/');
+      self.$store.user.uid = user.uid;
+      self.$store.user.email = user.email;
+      //loading shit 
+      self.$router.replace('/load');
     } else {
-      // No user is signed in.
+      // No user is signed in => reset
       self.$store = initialStore;
       self.$router.replace('/login');
     }

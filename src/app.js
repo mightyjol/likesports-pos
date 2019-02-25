@@ -2,19 +2,23 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 import routes from './routes/routes.js'
+import Toasted from 'vue-toasted'
 
 import './../assets/css/app.styl'
 
 const config = require ('./../config/default.js')
-const mixins = require ('./mixins/global.js')
 const initialStore = require('./../config/initialStore.js')
-
+const mixins = require ('./mixins/global.js')
+const prestashopWrapper = require ('./prestashop/wrapper.js')
 
 const firebase = require('firebase');
 firebase.initializeApp(config.firebase)
 
+const db = firebase.firestore();
+
 Vue.use(VueRouter);
 Vue.use(VueResource);
+Vue.use(Toasted);
 Vue.mixin(mixins);
 
 const router = new VueRouter({
@@ -23,11 +27,11 @@ const router = new VueRouter({
 
 Vue.prototype.$store = initialStore; 
 Vue.prototype.$firebase = firebase; 
+Vue.prototype.$db = db; 
 
 const app = new Vue({
 	router,
 	created: function() {
-		this.config = config;
     	this.authListener();
     	this.closeListener();
 

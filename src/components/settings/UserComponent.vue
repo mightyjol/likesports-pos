@@ -42,8 +42,7 @@
 <script>
 	
 export default {
-	created: async function () {
-		this.user = await this.getCurrentUserInfo();
+	created: function () {
 	},
 	methods: {
 		userLogout: async function(){
@@ -84,7 +83,7 @@ export default {
 			errorNewPassword: false,
 			errorNewPasswordMessage: '',
 			newPasswordOk: false,
-			user: {}
+			user: this.$firebase.auth().currentUser
 		}
 	}
 }
