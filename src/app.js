@@ -9,7 +9,6 @@ import './../assets/css/app.styl'
 const config = require ('./../config/default.js')
 const initialStore = require('./../config/initialStore.js')
 const mixins = require ('./mixins/global.js')
-const prestashopWrapper = require ('./prestashop/wrapper.js')
 
 const firebase = require('firebase');
 firebase.initializeApp(config.firebase)
@@ -25,12 +24,14 @@ const router = new VueRouter({
   	routes: routes 
 })
 
-Vue.prototype.$store = initialStore; 
 Vue.prototype.$firebase = firebase; 
 Vue.prototype.$db = db; 
 
 const app = new Vue({
 	router,
+	data: {
+		store: initialStore // make the store reactive again
+	},
 	created: function() {
     	this.authListener();
     	this.closeListener();

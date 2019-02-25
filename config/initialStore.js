@@ -10,6 +10,10 @@ let initialStore = {
         routes: {
         	ping: '/'
         }
+	},
+	inventoryMetadata: {
+		count: 0,
+		names: []
 	}
 };
 

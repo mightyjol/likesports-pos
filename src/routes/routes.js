@@ -3,6 +3,7 @@ import Update from './../views/Update.vue'
 import Login from './../views/Login.vue'
 import Load from './../views/Load.vue'
 import Home from './../views/Home.vue'
+import Inventory from './../views/Inventory.vue'
 import Settings from './../views/Settings.vue'
 import UserSettingsComponent from './../components/settings/UserComponent.vue'
 import PrestashopSettingsComponent from './../components/settings/PrestashopComponent.vue'
@@ -48,9 +49,9 @@ export default [
 			{
         path: 'inventory',
         name: 'inventory',
-        component: Settings,
+        component: Inventory,
         meta: {
-          keepAlive: true
+          keepAlive: false
         }
       },
       {

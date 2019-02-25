@@ -14,6 +14,20 @@
 	    		<button>Settings</button>
 	    	</router-link>
 	    </nav>
+	    <ul>
+	    	<li  >
+	    		{{userInfo.name}}
+
+	    	</li>
+	    	<li  >
+	    		{{userInfo.email}}
+
+	    	</li>
+	    	<li  >
+	    		{{userInfo.client_name}}
+
+	    	</li>
+	    </ul>
 	    <keep-alive>
 	    	<router-view v-if="$route.meta.keepAlive" />
 	    </keep-alive>
@@ -24,8 +38,14 @@
 <script>
 	
 export default {
-	data: () => {
+	computed: {
+		userInfo : function(){
+			return this.$root.store.user
+		}
+	},
+	data: function() {
 		return {
+			 
 		}
 	}
 }

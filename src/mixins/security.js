@@ -58,14 +58,12 @@ module.exports.authListener = function(){
   this.logout();
   this.$firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-      // User is signed in.
-      self.$store.user.uid = user.uid;
-      self.$store.user.email = user.email;
+
       //loading shit 
       self.$router.replace('/load');
     } else {
       // No user is signed in => reset
-      self.$store = initialStore;
+      self.$root.store = initialStore;
       self.$router.replace('/login');
     }
   });
