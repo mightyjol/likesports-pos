@@ -13,10 +13,7 @@ let initialStore = {
         	}
 		}
 	},
-	inventoryMetadata: {
-		count: 0,
-		names: []
-	}
+	inventory: {}
 };
 
 module.exports = initialStore;

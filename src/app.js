@@ -30,7 +30,8 @@ Vue.prototype.$db = db;
 const app = new Vue({
 	router,
 	data: {
-		store: initialStore // make the store reactive again
+		store: initialStore, // make the store reactive again
+		products: {}
 	},
 	created: function() {
     	this.authListener();
@@ -45,6 +46,11 @@ const app = new Vue({
 			console.log('starting update process')
 			router.replace('/init');
 			ipc.send('checkForUpdate');
+		}
+	},
+	computed: {
+		isAdmin: function(){
+			return this.store.user.isAdmin
 		}
 	}
 }).$mount('#app')

@@ -4,6 +4,8 @@ import Login from './../views/Login.vue'
 import Load from './../views/Load.vue'
 import Home from './../views/Home.vue'
 import Inventory from './../views/Inventory.vue'
+import Products from './../views/Products.vue'
+import ProductDetail from './../views/ProductDetail.vue'
 import Settings from './../views/Settings.vue'
 import UserSettingsComponent from './../components/settings/UserComponent.vue'
 import PrestashopSettingsComponent from './../components/settings/PrestashopComponent.vue'
@@ -42,6 +44,14 @@ export default [
         path: 'home',
         name: 'home',
         component: Home,
+        meta: {
+          keepAlive: false
+        }
+      },
+      {
+        path: 'products',
+        name: 'products',
+        component: products,
         meta: {
           keepAlive: false
         }
