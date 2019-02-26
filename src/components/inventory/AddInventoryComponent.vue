@@ -15,6 +15,8 @@ export default {
 			this.errorMessage = '';
 			
 			const name = this.newInventoryName;
+			const slug = this.slugify(name);
+
 			if(name.length < 5) {
 				this.errorMessage = 'name should be more then 5 chars long';
 				return
@@ -25,10 +27,11 @@ export default {
 				return;
 			}
 
-			this.$root.store.user.client.collection('inventory').doc(name).set({
+			this.$root.store.user.client.collection('inventory').doc(slug).set({
 				date_created: this.$firebase.firestore.FieldValue.serverTimestamp(),
 				date_last_update: this.$firebase.firestore.FieldValue.serverTimestamp(),
 				name: name,
+				slug: slug,
 				productCount: 0
 			})
 			.then(() => {

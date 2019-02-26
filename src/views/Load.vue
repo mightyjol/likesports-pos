@@ -41,7 +41,6 @@ export default {
  			 
 	      	//this is double checked server-side anyways
 			if(data.roles.includes('admin')){
-				
 				this.$root.store.user.isAdmin = true;
 			}
 
@@ -111,15 +110,22 @@ export default {
 			            else{
 			            	console.log("updated inventory entry")
 			            	let elem = {};
-			            	elem[change.doc.id] = change.doc.data();
+			            	let data = change.doc.data();
+			            	elem[change.doc.id] = data;
+			            	elem[change.doc.id].isDefault = 
+			            		this.$root.store.user.inventory.read[data.slug] === true;
 			            	this.$root.store.inventory = Object.assign({}, this.$root.store.inventory, elem);
 			            }
 		    		});
 
 			        if(this.$route.name === 'load'){
 			        	collection.forEach(doc => {
-				    		console.log('added', doc.data());
-				    		this.$root.store.inventory[doc.id] = doc.data();
+				    		
+				    		let data = doc.data();
+				    		this.$root.store.inventory[doc.id] = data;
+				    		this.$root.store.inventory[doc.id].isDefault = 
+				    			this.$root.store.user.inventory.read[data.slug] === true;
+			    			console.log('added', this.$root.store.inventory[doc.id]);	
 				    	});
 		 				this.bIsInventoriesLoaded = true;
 				        this.checkIfDone();
