@@ -51,7 +51,7 @@ export default [
       {
         path: 'products',
         name: 'products',
-        component: products,
+        component: Products,
         meta: {
           keepAlive: false
         }

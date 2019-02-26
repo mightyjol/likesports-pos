@@ -58,7 +58,7 @@ export default {
 			if(this.bAllDone){
 				//skipping things
 				this.bIsSyncing = false;
-				this.$router.replace('inventory');
+				this.$router.replace('products');
 			}
 		},
 		loadSettings: function(){
@@ -114,12 +114,11 @@ export default {
 			            	elem[change.doc.id] = change.doc.data();
 			            	this.$root.store.inventory = Object.assign({}, this.$root.store.inventory, elem);
 			            }
-			            console.error(this.$root.store.inventory)
 		    		});
 
 			        if(this.$route.name === 'load'){
 			        	collection.forEach(doc => {
-				    		console.error('added', doc.data());
+				    		console.log('added', doc.data());
 				    		this.$root.store.inventory[doc.id] = doc.data();
 				    	});
 		 				this.bIsInventoriesLoaded = true;

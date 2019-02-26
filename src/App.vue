@@ -7,6 +7,9 @@
 	    	<router-link to="home">
 	    		<button>Home</button>
 	    	</router-link>
+	    	<router-link to="products">
+	    		<button>Products management</button>
+	    	</router-link>
 	    	<router-link to="inventory">
 	    		<button>Inventory</button>
 	    	</router-link>

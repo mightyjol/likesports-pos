@@ -17,7 +17,9 @@ export default {
 
 	},
 	data: function () {
-
+		return {
+			errorMessage: ''
+		}
 	}
 }
 
