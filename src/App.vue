@@ -10,10 +10,10 @@
 	    	<router-link to="products">
 	    		<button>Products management</button>
 	    	</router-link>
-	    	<router-link to="inventory">
+	    	<router-link to="inventory" v-if="this.$root.isAdmin">
 	    		<button>Inventory</button>
 	    	</router-link>
-	    	<router-link to="settings">
+	    	<router-link to="settings" v-if="this.$root.isAdmin">
 	    		<button>Settings</button>
 	    	</router-link>
 	    </nav>

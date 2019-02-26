@@ -17,6 +17,31 @@
 		</div>
 
 		<br>----------------------<br>
+		<table>
+			<thead>
+				 
+				<tr>
+					<th>Ref</th>
+					<th>Name</th>
+					<th>Update</th>
+					<th>Delete</th>
+				</tr>
+			</thead>
+			<tr v-for='p in products'>
+				<td>p.ref</td>
+				<td>p.name</td>
+				<td>
+					<button @click="updateProduct(p.ref)">
+						update		
+					</button>
+				</td>
+				<td>
+					<button @click="deleteProduct(p.ref)">
+						delete
+					</button>
+				</td>
+			</tr>
+		</table>
 	</div>
 </template>
 
@@ -28,9 +53,11 @@ export default {
 			this.checkAll();
 		}
 		else{
-			this.checkedInventories = this.$root.store.user.inventory.default
+			for(let i in this.$root.store.inventory){
+				this.checkedInventories[i] = 
+					this.$root.store.user.settings.inventory.default.includes(i);
+			}
 		}
-		console.error(this.checkedInventories)
 	},
 	methods: {
 		check: function(e) {
@@ -44,26 +71,35 @@ export default {
 		},
 		checkAll: function(){
 			console.error('check all')
+			let full = {}
 			for(let i in this.$root.store.inventory){
-				this.checkedInventories[i] = true
+				full[i] = true
 			}
+			this.checkedInventories = Object.assign({}, full);
 		},
 		uncheckAll: function(){
-			console.error('check all')
-			for(let i in this.$root.store.inventory){
-				this.checkedInventories[i] = true
-			}
+			console.error('uncheck all')
+			this.checkedInventories = {};
+		},
+		updateProduct: function(ref){
+
+		},
+		deleteProduct: function(ref){
+
 		}
 	},
 	computed: {
 		inventories: function(){
 			return this.$root.store.inventory
+		},
+		products: function(){
+			return this.$root.store.products
 		}
 	},
 	data: function () {
 		return {
 			errorMessage: '',
-			checkedInventories: {}
+			checkedInventories: {},
 		}
 	}
 }

@@ -18,6 +18,12 @@
 	    <p v-else>
 	    	Inventory loaded
 	    </p>
+	    <p v-if="!bIsProductsLoaded">
+	    	loading Products <span v-if="errorProducts">{{errorProducts}}</span>
+	    </p>
+	    <p v-else>
+	    	Products loaded
+	    </p>
 	</div>
 </template>
 
@@ -38,6 +44,7 @@ export default {
 
  			//add data to store
  			this.$root.store.user = data;
+ 			this.$root.store.user.uid = doc.id;
  			 
 	      	//this is double checked server-side anyways
 			if(data.roles.includes('admin')){
@@ -47,6 +54,7 @@ export default {
 			if(this.bIsSyncing){
 				this.loadSettings();
 				this.loadInventory();
+				//this.loadProducts();
 			}
 
 
@@ -57,40 +65,54 @@ export default {
 			if(this.bAllDone){
 				//skipping things
 				this.bIsSyncing = false;
+				console.log(this.$root.store)
 				this.$router.replace('products');
 			}
 		},
 		loadSettings: function(){
-			
-			this.$root.store.user.client
-	 		.onSnapshot(doc => {
-			    if (doc.exists) {
-			    	console.log('settings updated')
-			        let data = doc.data();
-			        //add data to store
-			        this.$root.store.settings.prestashop.domain = data.settings.prestashop.domain
-			        this.$root.store.settings.prestashop.key = data.settings.prestashop.key
-
-			        if(this.$route.name === 'load'){
-		 				this.bIsSettingsLoaded = true;
-				        this.checkIfDone();
+			console.log('starting settings load')
+			if(this.$root.store.user.isAdmin){
+				this.$root.store.user.client.collection('settings')
+		 		.onSnapshot(collection => {
+				    if (!collection.empty) {
+				    	console.log('settings updated')
+				        
+						collection.forEach(doc => {
+							if(doc.id === 'prestashop'){
+								let data = doc.data();
+				        
+						        //add data to store
+						        this.$root.store.settings.prestashop.domain = data.domain
+						        this.$root.store.settings.prestashop.key = data.key
+							}
+						})
+				        
+				        if(this.$route.name === 'load'){
+			 				this.bIsSettingsLoaded = true;
+					        this.checkIfDone();
+					    }
+				    } else {
+				    	if(this.$route.name === 'load'){
+				        	this.errorSettings = "No settings collection!";
+				        }
 				    }
-			    } else {
-			    	if(this.$route.name === 'load'){
-			        	this.errorSettings = "No such document!";
-			        }
-			    }
-			    console.log('store' , this.$root.store);
-			},
-			e => {
-				if(this.$route.name === 'load'){
-					console.error(e)
-			    	this.errorSettings = e;
-				}
-			});		 
+				},
+				e => {
+					if(this.$route.name === 'load'){
+						console.error('settings', e)
+				    	this.errorSettings = e;
+					}
+				});		
+			}
+			else {
+				this.bIsSettingsLoaded = true;
+		        this.checkIfDone();
+			}
 		},
 		loadInventory: function(){
+			console.log('starting inventory load');
 			this.$root.store.user.client.collection('inventory')
+			.where('rights.read', 'array-contains', this.$root.store.user.uid)
 	 		.onSnapshot(collection => {
 			    if (collection.empty) {
 			    	console.log('no inventories')
@@ -102,6 +124,7 @@ export default {
 			    	console.log('inventory loaded')
 
 					collection.docChanges().forEach(change => {
+						console.log('before removed')
 						if (change.type === "removed") {
 							console.log("deleted inventory entry")
 			                delete this.$root.store.inventory[change.doc.id];
@@ -112,8 +135,6 @@ export default {
 			            	let elem = {};
 			            	let data = change.doc.data();
 			            	elem[change.doc.id] = data;
-			            	elem[change.doc.id].isDefault = 
-			            		this.$root.store.user.inventory.read[data.slug] === true;
 			            	this.$root.store.inventory = Object.assign({}, this.$root.store.inventory, elem);
 			            }
 		    		});
@@ -123,8 +144,6 @@ export default {
 				    		
 				    		let data = doc.data();
 				    		this.$root.store.inventory[doc.id] = data;
-				    		this.$root.store.inventory[doc.id].isDefault = 
-				    			this.$root.store.user.inventory.read[data.slug] === true;
 			    			console.log('added', this.$root.store.inventory[doc.id]);	
 				    	});
 		 				this.bIsInventoriesLoaded = true;
@@ -134,23 +153,72 @@ export default {
 			},
 			e => {
 				if(this.$route.name === 'load'){
-					console.error(e)
+					console.error('inventory', e)
 			    	this.errorInventories = e;
+				}
+			});		 
+		},
+		loadProducts: function(){
+			this.$root.store.user.client.collection('product')
+	 		.onSnapshot(collection => {
+			    if (collection.empty) {
+			    	console.log('no products')
+			    	this.$root.store.product = Object.assign({})
+			    	this.bIsProductsLoaded = true;
+			        this.checkIfDone();
+			        return
+			    } else {
+			    	console.log('products loaded')
+
+					collection.docChanges().forEach(change => {
+						if (change.type === "removed") {
+							console.log("deleted product entry")
+			                delete this.$root.store.product[change.doc.id];
+			                this.$root.store.product = Object.assign({}, this.$root.store.product);
+			            }
+			            else{
+			            	console.log("updated product entry")
+			            	let elem = {};
+			            	let data = change.doc.data();
+			            	elem[change.doc.id] = data;
+			            	this.$root.store.products = Object.assign({}, this.$root.store.products, elem);
+			            }
+		    		});
+
+			        if(this.$route.name === 'load'){
+			        	collection.forEach(doc => {
+				    		let data = doc.data();
+				    		this.$root.store.products[doc.id] = data;
+				    		console.log('added', this.$root.store.products[doc.id]);	
+				    	});
+		 				this.bIsProductsLoaded = true;
+				        this.checkIfDone();
+				    }			    
+			    }
+			},
+			e => {
+				if(this.$route.name === 'load'){
+					console.error('product', e)
+			    	this.errorProducts = e;
 				}
 			});		 
 		}
 	},
 	computed: {
 		bAllDone: function(){
-			return this.bIsSettingsLoaded && this.bIsInventoriesLoaded
+			return this.bIsSettingsLoaded && 
+				this.bIsInventoriesLoaded &&
+				this.bIsProductsLoaded;
 		}
 	},
 	data: function () {
 		return {
 			bIsSettingsLoaded: false,
 			bIsInventoriesLoaded: false,
+			bIsProductsLoaded: true,
 			errorSettings: '',
 			errorInventories: '',
+			errorProducts: '',
 			bIsSyncing: true
 		}
 	}

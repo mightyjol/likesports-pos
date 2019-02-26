@@ -41,7 +41,7 @@ export default {
 	methods: {
 		deleteInventory: function(name){
 			this.errorMessage = ''
-			console.error(name)
+			
 			this.$root.store.user.client.collection('inventory').doc(name).delete()
 			.then(() => {})
 			.catch(e => {

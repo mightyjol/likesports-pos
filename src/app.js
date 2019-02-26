@@ -12,6 +12,7 @@ const mixins = require ('./mixins/global.js')
 
 const firebase = require('firebase');
 firebase.initializeApp(config.firebase)
+ 
 
 const db = firebase.firestore();
 

@@ -13,7 +13,8 @@ let initialStore = {
         	}
 		}
 	},
-	inventory: {}
+	inventory: {},
+	product: {}
 };
 
 module.exports = initialStore;
