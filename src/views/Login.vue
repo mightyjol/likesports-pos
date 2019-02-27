@@ -1,41 +1,59 @@
 <template>
-    <h1>
-    	Login <br>
-    	<input v-model="email" type="email" name="email" placeholder="email"> <br>
-    	<input v-model="password" type="password" name="password"> <br>
-    	<button v-on:click="checkData">
-    		Se connecter
-    	</button>
-    	<p v-if='error'>
-    		{{errorMessage}}
-    	</p>
-    </h1>
+	<el-row id="login" type="flex" align="middle" justify="center">
+		<el-col class="loginContainer">
+			<el-card>
+				<div slot="header">
+					<span>Login</span>
+				</div>
+				<div>
+					<el-form :model="loginForm" @submit.prevent.native="checkData">
+						<el-form-item label="email" prop="email">
+							<el-input v-model="loginForm.email" type="email"></el-input>
+						</el-form-item>
+						<el-form-item label="password">
+				    		<el-input v-model="loginForm.password" type="password"></el-input>
+				    	</el-form-item>
+				    	<el-form-item>
+					    	<el-button type="primary" :loading="loginProcess" native-type="submit" @click="checkData">
+					    		Se connecter
+					    	</el-button>
+					    </el-form-item>
+			    	</el-form>
+				</div>	 
+			</el-card>   
+		</el-col>
+	</el-row>
+   
 </template>
 
 <script>
 export default {
 	data: () => {
 		return {
-			email: 'jerome.hanke@gmail.com',
-			password: 'testing',
-			error: false,
-			errorMessage: 'undefined'
+			loginForm: {
+				email: 'jerome.hanke@gmail.com',
+				password: 'testing'
+			},
+			loginProcess: false
 		}
 	},
 	methods: {
-		checkData: async function() {
-			//reset error
-			this.error = false;
-			this.errorMessage = false;
-			
-			const email = this.email;
-			const password = this.password;
+		checkData: async function(e) {	
+			e.preventDefault();	
 
-			let result = await this.login(email, password);
-			if(result !== true){
-				this.error = true;
-				this.errorMessage = result.error || ''
-			}
+			this.loginProcess = true;
+			this.$firebase.auth().signInWithEmailAndPassword(this.loginForm.email, this.loginForm.password)
+		 	.then(() => {
+		 		this.loginProcess = false;
+		 	})
+		 	.catch(e => {
+		 		this.$message({
+		          showClose: true,
+		          message: e,
+		          type: 'error'
+		        })
+				this.loginProcess = false;
+		 	})			 
 		}
 	}
 }

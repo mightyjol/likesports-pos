@@ -26,6 +26,15 @@
 		prix <br>
 		Prix achat <input type="number" step="0.01" v-model="product.price.pa"><br>
 		Prix vente ttc <input type="number" step="0.01" v-model="product.price.pvttc"><br>
+		<br>----------<br>
+		Categorisation and tagging <br>
+		//fournisseurs
+		//tags + new tags
+		<br>----------<br>
+		quantities and stock <br>
+		//marque + new marque
+		//tags + new tags
+
 	</div>
 </template>
 

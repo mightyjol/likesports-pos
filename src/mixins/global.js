@@ -31,7 +31,6 @@ let mixins = {
     prestashopPing: prestashop.ping,
     authListener: security.authListener,
     updatePassword: security.updatePassword,
-    login: security.login,
     logout: security.logout,
     slugify: function(string){
       const a = 'àáäâãåăæçèéëêǵḧìíïîḿńǹñòóöôœṕŕßśșțùúüûǘẃẍÿź·/_,:;'

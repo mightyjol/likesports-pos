@@ -1,29 +1,5 @@
 <template>
-	<div>
-		<h1 v-if="!bAllDone">
-    	Loading
-	    </h1>
-	    <h1 v-else>
-	    	Loading Complete
-	    </h1>
-	    <p v-if="!bIsSettingsLoaded">
-	    	loading settings <span v-if="errorSettings">{{errorSettings}}</span>
-	    </p>
-	    <p v-else>
-	    	settings loaded
-	    </p>
-	    <p v-if="!bIsInventoriesLoaded">
-	    	loading Inventory <span v-if="errorInventories">{{errorInventories}}</span>
-	    </p>
-	    <p v-else>
-	    	Inventory loaded
-	    </p>
-	    <p v-if="!bIsProductsLoaded">
-	    	loading Products <span v-if="errorProducts">{{errorProducts}}</span>
-	    </p>
-	    <p v-else>
-	    	Products loaded
-	    </p>
+	<div class='full-width' v-loading="bAllDone">
 	</div>
 </template>
 
@@ -46,9 +22,18 @@ export default {
  			this.$root.store.user = data;
  			this.$root.store.user.uid = doc.id;
  			 
-	      	//this is double checked server-side anyways
+	      	//simple role setting
 			if(data.roles.includes('admin')){
 				this.$root.store.user.isAdmin = true;
+				this.$root.store.user.isManager = true;
+				this.$root.store.user.isCashier = true;
+			}
+			else if(data.roles.includes('manager')){
+				this.$root.store.user.isManager = true;
+				this.$root.store.user.isCashier = true;
+			}
+			else if(data.roles.includes('cashier')){
+				this.$root.store.user.isCashier = true;
 			}
 
 			if(this.bIsSyncing){
@@ -56,8 +41,6 @@ export default {
 				this.loadInventory();
 				this.loadProducts();
 			}
-
-
  		});	 
 	},
 	methods: {
@@ -66,7 +49,8 @@ export default {
 				//skipping things
 				this.bIsSyncing = false;
 				console.log(this.$root.store)
-				this.$router.replace('home');
+				 
+				this.$router.replace({ name:'home' });
 			}
 		},
 		loadSettings: function(){
@@ -93,14 +77,19 @@ export default {
 					    }
 				    } else {
 				    	if(this.$route.name === 'load'){
-				        	this.errorSettings = "No settings collection!";
+				    		this.$alert('No settings collection!', 'Error: settings', {
+          						confirmButtonText: 'OK',
+          						type: 'error'
+          					});
 				        }
 				    }
 				},
 				e => {
 					if(this.$route.name === 'load'){
-						console.error('settings', e)
-				    	this.errorSettings = e;
+						this.$alert(e, 'Error: settings', {
+      						confirmButtonText: 'OK',
+      						type: 'error'
+      					});
 					}
 				});		
 			}
@@ -158,8 +147,10 @@ export default {
 			},
 			e => {
 				if(this.$route.name === 'load'){
-					console.error('inventory', e)
-			    	this.errorInventories = e;
+					this.$alert(e, 'Error: inventory', {
+  						confirmButtonText: 'OK',
+  						type: 'error'
+  					});
 				}
 			});		 
 		},
@@ -169,8 +160,10 @@ export default {
 			    if (collection.empty) {
 			    	console.log('no products')
 			    	this.$root.store.products = Object.assign({})
-			    	this.bIsProductsLoaded = true;
-			        this.checkIfDone();
+			    	if(this.$route.name === 'load'){
+			    		this.bIsProductsLoaded = true;
+			        	this.checkIfDone();
+			    	}
 			        return
 			    } else {
 			    	console.log('products loaded')
@@ -203,8 +196,10 @@ export default {
 			},
 			e => {
 				if(this.$route.name === 'load'){
-					console.error('product', e)
-			    	this.errorProducts = e;
+					this.$alert(e, 'Error: products', {
+  						confirmButtonText: 'OK',
+  						type: 'error'
+  					});
 				}
 			});		 
 		}
@@ -221,9 +216,6 @@ export default {
 			bIsSettingsLoaded: false,
 			bIsInventoriesLoaded: false,
 			bIsProductsLoaded: false,
-			errorSettings: '',
-			errorInventories: '',
-			errorProducts: '',
 			bIsSyncing: true
 		}
 	}

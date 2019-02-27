@@ -1,27 +1,5 @@
 const initialStore = require('./../../config/initialStore.js');
 
-module.exports.login = async function(email, password){
-  //send to login
-  let result = false;
-  await this.$firebase.auth().signInWithEmailAndPassword(email, password)
-  .then(function(user){
-    console.log('logged in successfully');
-    result = true;
-  })
-  .catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-
-    result = {
-      error: errorMessage,
-      errorCode: errorCode
-    };
-  });
-
-  return result
-};
-
 module.exports.logout = async function(){
   let self = this;
   let result = false;

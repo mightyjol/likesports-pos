@@ -17,11 +17,14 @@ function createWindow () {
   win = new BrowserWindow({ 
   	width: 1024, 
   	height: 800,
+    minWidth: 320,
     webPreferences: {
       nodeIntegration: false,
       preload: path.join(__dirname, 'preload.js')
     }
   });
+
+  win.setMenuBarVisibility(false);
 
   win.loadFile('./dist/index.html');
   if(isDev) win.webContents.openDevTools();

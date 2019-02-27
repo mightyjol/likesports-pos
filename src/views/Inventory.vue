@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h6>Inventory</h6><br>
+		<h4>Inventory</h4><br>
 		<p v-if="errorMessage">
 			{{errorMessage}}
 		</p>
