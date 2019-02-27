@@ -4,6 +4,11 @@
 		<p v-if="errorMessage">
 			{{errorMessage}}
 		</p>
+		<router-link :to="{ name: 'productDetail', params: { ref: 'new' }}">
+			<button>
+				add a new product
+			</button>
+		</router-link>		
 		<br>----------------------<br>
 		Filters	
 		<button @click="checkAll()">
@@ -15,7 +20,6 @@
 		<div v-for="i in inventories">
 			| {{ i.name }}<input type="checkbox" :value="i.slug" :checked="checkedInventories[i.slug]" @change="check($event)"> |
 		</div>
-
 		<br>----------------------<br>
 		<table>
 			<thead>
@@ -28,15 +32,17 @@
 				</tr>
 			</thead>
 			<tr v-for='p in products'>
-				<td>p.ref</td>
-				<td>p.name</td>
+				<td>{{ p.ref }}</td>
+				<td>{{ p.metadata.name }}</td>
 				<td>
-					<button @click="updateProduct(p.ref)">
-						update		
-					</button>
+					<router-link :to="{ name:'productDetail', params: {'ref': p.slug} }">
+						<button>
+							update		
+						</button>
+					</router-link>	
 				</td>
 				<td>
-					<button @click="deleteProduct(p.ref)">
+					<button @click="deleteProduct(p.slug)">
 						delete
 					</button>
 				</td>
@@ -85,7 +91,17 @@ export default {
 
 		},
 		deleteProduct: function(ref){
-
+			if(this.$root.store.products[ref] === undefined){
+				console.error('wrong reference was passed', ref);
+				this.errorMessage = 'an error has occured';
+			}
+			else{
+				this.$root.store.user.client.collection('product').doc(ref).delete()
+				.catch(e => {
+					console.error = e
+					this.errorMessage = e
+				});
+			}	
 		}
 	},
 	computed: {
@@ -93,7 +109,12 @@ export default {
 			return this.$root.store.inventory
 		},
 		products: function(){
-			return this.$root.store.products
+			let allProducts = this.$root.store.products;
+			let products = {};
+
+
+			products = allProducts;
+			return products;
 		}
 	},
 	data: function () {

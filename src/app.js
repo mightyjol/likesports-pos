@@ -25,6 +25,13 @@ const router = new VueRouter({
   	routes: routes 
 })
 
+/*
+router.beforeEach((to, from, next) => {
+  console.error(to)
+  next()
+})
+*/
+
 Vue.prototype.$firebase = firebase; 
 Vue.prototype.$db = db; 
 

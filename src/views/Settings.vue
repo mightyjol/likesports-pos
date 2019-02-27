@@ -2,10 +2,10 @@
 	<div>
 		<h4>Settings</h4><br>
 		<nav>
-			<router-link to="user">
+			<router-link :to="{ name: 'user' }">
 				<button>Profil</button>
 			</router-link>	
-			<router-link to="prestashop">
+			<router-link :to="{ name: 'prestashop' }">
 				<button>Prestashop</button>
 			</router-link>	
 		</nav>

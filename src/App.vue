@@ -4,16 +4,16 @@
 	    	App
 	    </h1>
 	    <nav>
-	    	<router-link to="home">
+	    	<router-link :to="{ name: 'home' }">
 	    		<button>Home</button>
 	    	</router-link>
-	    	<router-link to="products">
+	    	<router-link :to="{ name: 'products' }">
 	    		<button>Products management</button>
 	    	</router-link>
-	    	<router-link to="inventory" v-if="this.$root.isAdmin">
+	    	<router-link :to="{ name: 'inventory' }" v-if="this.$root.isAdmin">
 	    		<button>Inventory</button>
 	    	</router-link>
-	    	<router-link to="settings" v-if="this.$root.isAdmin">
+	    	<router-link :to="{ name: 'settings' }" v-if="this.$root.isAdmin">
 	    		<button>Settings</button>
 	    	</router-link>
 	    </nav>

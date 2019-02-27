@@ -54,7 +54,7 @@ export default {
 			if(this.bIsSyncing){
 				this.loadSettings();
 				this.loadInventory();
-				//this.loadProducts();
+				this.loadProducts();
 			}
 
 
@@ -66,7 +66,7 @@ export default {
 				//skipping things
 				this.bIsSyncing = false;
 				console.log(this.$root.store)
-				this.$router.replace('products');
+				this.$router.replace('home');
 			}
 		},
 		loadSettings: function(){
@@ -111,9 +111,14 @@ export default {
 		},
 		loadInventory: function(){
 			console.log('starting inventory load');
-			this.$root.store.user.client.collection('inventory')
-			.where('rights.read', 'array-contains', this.$root.store.user.uid)
-	 		.onSnapshot(collection => {
+
+			let query = this.$root.store.user.client.collection('inventory');
+			
+			if(!this.$root.store.user.isAdmin){
+				query = query.where('rights.read', 'array-contains', this.$root.store.user.uid);
+			}			
+			
+	 		query.onSnapshot(collection => {
 			    if (collection.empty) {
 			    	console.log('no inventories')
 			    	this.$root.store.inventory = Object.assign({})
@@ -163,7 +168,7 @@ export default {
 	 		.onSnapshot(collection => {
 			    if (collection.empty) {
 			    	console.log('no products')
-			    	this.$root.store.product = Object.assign({})
+			    	this.$root.store.products = Object.assign({})
 			    	this.bIsProductsLoaded = true;
 			        this.checkIfDone();
 			        return
@@ -173,8 +178,8 @@ export default {
 					collection.docChanges().forEach(change => {
 						if (change.type === "removed") {
 							console.log("deleted product entry")
-			                delete this.$root.store.product[change.doc.id];
-			                this.$root.store.product = Object.assign({}, this.$root.store.product);
+			                delete this.$root.store.products[change.doc.id];
+			                this.$root.store.products = Object.assign({}, this.$root.store.products);
 			            }
 			            else{
 			            	console.log("updated product entry")
@@ -215,7 +220,7 @@ export default {
 		return {
 			bIsSettingsLoaded: false,
 			bIsInventoriesLoaded: false,
-			bIsProductsLoaded: true,
+			bIsProductsLoaded: false,
 			errorSettings: '',
 			errorInventories: '',
 			errorProducts: '',

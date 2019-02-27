@@ -14,7 +14,8 @@ let initialStore = {
 		}
 	},
 	inventory: {},
-	product: {}
+	products: {},
+	failed: {}
 };
 
 module.exports = initialStore;

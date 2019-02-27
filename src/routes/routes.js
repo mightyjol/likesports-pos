@@ -7,6 +7,7 @@ import Inventory from './../views/Inventory.vue'
 import Products from './../views/Products.vue'
 import ProductDetail from './../views/ProductDetail.vue'
 import Settings from './../views/Settings.vue'
+import Error404 from './../views/Error404.vue'
 import UserSettingsComponent from './../components/settings/UserComponent.vue'
 import PrestashopSettingsComponent from './../components/settings/PrestashopComponent.vue'
 
@@ -56,6 +57,14 @@ export default [
           keepAlive: false
         }
       },
+      {
+        path: 'products/:ref',
+        name: 'productDetail',
+        component: ProductDetail,
+        meta: {
+          keepAlive: false
+        }
+      },
 			{
         path: 'inventory',
         name: 'inventory',
@@ -89,4 +98,12 @@ export default [
       }
     ]
 	},
+  {
+    path: '*',
+    name: '404',
+    component: Error404,
+    meta: {
+      keepAlive: false
+    }
+  }
 ];
