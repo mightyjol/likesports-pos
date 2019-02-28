@@ -1,5 +1,5 @@
 <template>
-	<div class='full-width' v-loading="bAllDone">
+	<div class='full-width' v-loading="!bAllDone">
 	</div>
 </template>
 
@@ -39,6 +39,8 @@ export default {
 			if(this.bIsSyncing){
 				this.loadSettings();
 				this.loadInventory();
+				this.loadManufacturers();
+				this.loadTags();
 				this.loadProducts();
 			}
  		});	 
@@ -50,7 +52,7 @@ export default {
 				this.bIsSyncing = false;
 				console.log(this.$root.store)
 				 
-				this.$router.replace({ name:'home' });
+				this.$router.replace({ name:'productDetail', params:{ ref:'new' } });
 			}
 		},
 		loadSettings: function(){
@@ -79,7 +81,11 @@ export default {
 				    	if(this.$route.name === 'load'){
 				    		this.$alert('No settings collection!', 'Error: settings', {
           						confirmButtonText: 'OK',
-          						type: 'error'
+          						type: 'error',
+          						callback: action => {
+          							this.$store = {};
+						            this.$router.replace({ name:'login' })
+					          	}
           					});
 				        }
 				    }
@@ -88,7 +94,11 @@ export default {
 					if(this.$route.name === 'load'){
 						this.$alert(e, 'Error: settings', {
       						confirmButtonText: 'OK',
-      						type: 'error'
+      						type: 'error',
+      						callback: action => {
+      							this.$store = {};
+					            this.$router.replace({ name:'login' })
+				          	}
       					});
 					}
 				});		
@@ -149,7 +159,115 @@ export default {
 				if(this.$route.name === 'load'){
 					this.$alert(e, 'Error: inventory', {
   						confirmButtonText: 'OK',
-  						type: 'error'
+  						type: 'error',
+  						callback: action => {
+  							this.$store = {};
+				            this.$router.replace({ name:'login' })
+			          	}
+  					});
+				}
+			});		 
+		},
+		loadManufacturers: function() {
+			this.$root.store.user.client.collection('manufacturer')
+	 		.onSnapshot(collection => {
+			    if (collection.empty) {
+			    	console.log('no manufacturers')
+			    	if(this.$route.name === 'load'){
+			    		this.bIsManufacturersLoaded = true;
+			        	this.checkIfDone();
+			    	}
+			        return
+			    } else {
+			    	console.log('manufacturers loaded')
+
+					collection.docChanges().forEach(change => {
+						if (change.type === "removed") {
+							console.log("deleted manufacturers entry")
+			                delete this.$root.store.manufacturers[change.doc.id];
+			                this.$root.store.manufacturers = Object.assign({}, this.$root.store.manufacturers);
+			            }
+			            else{
+			            	console.log("updated manufacturers entry")
+			            	let elem = {};
+			            	let data = change.doc.data();
+			            	elem[change.doc.id] = data;
+			            	this.$root.store.manufacturers = Object.assign({}, this.$root.store.manufacturers, elem);
+			            }
+		    		});
+
+			        if(this.$route.name === 'load'){
+			        	collection.forEach(doc => {
+				    		let data = doc.data();
+				    		this.$root.store.manufacturers[doc.id] = data;
+				    		console.log('added', this.$root.store.manufacturers[doc.id]);	
+				    	});
+		 				this.bIsManufacturersLoaded = true;
+				        this.checkIfDone();
+				    }			    
+			    }
+			},
+			e => {
+				if(this.$route.name === 'load'){
+					this.$alert(e, 'Error: loadManufacturers', {
+  						confirmButtonText: 'OK',
+  						type: 'error',
+  						callback: action => {
+  							this.$store = {};
+				            this.$router.replace({ name:'login' })
+			          	}
+  					});
+				}
+			});		 
+		},
+		loadTags: function(){
+			this.$root.store.user.client.collection('tag')
+	 		.onSnapshot(collection => {
+			    if (collection.empty) {
+			    	console.log('no tags')
+			    	if(this.$route.name === 'load'){
+			    		this.bIsTagsLoaded = true;
+			        	this.checkIfDone();
+			    	}
+			        return
+			    } else {
+			    	console.log('tags loaded')
+
+					collection.docChanges().forEach(change => {
+						if (change.type === "removed") {
+							console.log("deleted tag entry")
+			                delete this.$root.store.tags[change.doc.id];
+			                this.$root.store.tags = Object.assign({}, this.$root.store.tags);
+			            }
+			            else{
+			            	console.log("updated tag entry")
+			            	let elem = {};
+			            	let data = change.doc.data();
+			            	elem[change.doc.id] = data;
+			            	this.$root.store.tags = Object.assign({}, this.$root.store.tags, elem);
+			            }
+		    		});
+
+			        if(this.$route.name === 'load'){
+			        	collection.forEach(doc => {
+				    		let data = doc.data();
+				    		this.$root.store.tags[doc.id] = data;
+				    		console.log('added', this.$root.store.tags[doc.id]);	
+				    	});
+		 				this.bIsTagsLoaded = true;
+				        this.checkIfDone();
+				    }			    
+			    }
+			},
+			e => {
+				if(this.$route.name === 'load'){
+					this.$alert(e, 'Error: tags', {
+  						confirmButtonText: 'OK',
+  						type: 'error',
+  						callback: action => {
+  							this.$store = {};
+				            this.logout();
+			          	}
   					});
 				}
 			});		 
@@ -198,7 +316,11 @@ export default {
 				if(this.$route.name === 'load'){
 					this.$alert(e, 'Error: products', {
   						confirmButtonText: 'OK',
-  						type: 'error'
+  						type: 'error',
+  						callback: action => {
+  							this.$store = {};
+				            this.logout();
+			          	}
   					});
 				}
 			});		 
@@ -208,6 +330,8 @@ export default {
 		bAllDone: function(){
 			return this.bIsSettingsLoaded && 
 				this.bIsInventoriesLoaded &&
+				this.bIsManufacturersLoaded &&
+				this.bIsTagsLoaded &&
 				this.bIsProductsLoaded;
 		}
 	},
@@ -215,6 +339,8 @@ export default {
 		return {
 			bIsSettingsLoaded: false,
 			bIsInventoriesLoaded: false,
+			bIsManufacturersLoaded: false,
+			bIsTagsLoaded: false,
 			bIsProductsLoaded: false,
 			bIsSyncing: true
 		}

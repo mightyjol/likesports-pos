@@ -87,9 +87,6 @@ export default {
 			console.error('uncheck all')
 			this.checkedInventories = {};
 		},
-		updateProduct: function(ref){
-
-		},
 		deleteProduct: function(ref){
 			if(this.$root.store.products[ref] === undefined){
 				console.error('wrong reference was passed', ref);
@@ -109,9 +106,10 @@ export default {
 			return this.$root.store.inventory
 		},
 		products: function(){
-			let allProducts = this.$root.store.products;
+			let allProducts = Object.assign({}, this.$root.store.products);
 			let products = {};
 
+			delete allProducts['new']
 
 			products = allProducts;
 			return products;

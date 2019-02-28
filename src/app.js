@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
+
 import routes from './routes/routes.js'
 
 import './../theme/index.css'
@@ -18,7 +20,7 @@ const db = firebase.firestore();
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
-Vue.use(ElementUI);
+Vue.use(ElementUI, { locale });
 Vue.mixin(mixins);
 
 const router = new VueRouter({
