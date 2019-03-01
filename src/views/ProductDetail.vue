@@ -205,8 +205,8 @@ export default {
 		addTag: function(){
 			let tags = this.product.tags;
 
-			for(let tag of tags){
-				let name = this.tag;
+			for(let i in tags){
+				let name = this.product.tags[i];
 				let slug = this.slugify(name);
 
 				//isValidTag
@@ -214,7 +214,8 @@ export default {
 				if(this.$root.store.tags[slug] != undefined) continue;
 
 				console.log('adding a tag')
-				
+				name = name.charAt(0).toUpperCase() + name.substr(1);
+
 				let t = {
 					name: name,
 					ref: slug,
@@ -223,8 +224,7 @@ export default {
 
 				this.$root.store.user.client.collection('tag').doc(slug).set(t)
 				.then(() => {
-					this.$root.store.products[this.ref].tags.push(t.slug);
-					this.tag = '';
+					this.product.tags[i] = name;
 				})
 				.catch(e => {
 					this.$notify.error({

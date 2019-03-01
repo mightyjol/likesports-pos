@@ -52,7 +52,8 @@ export default {
 				this.bIsSyncing = false;
 				console.log(this.$root.store)
 				 
-				this.$router.replace({ name:'productDetail', params:{ ref:'new' } });
+				//this.$router.replace({ name:'productDetail', params:{ ref:'new' } });
+				this.$router.replace({ name:'tags' });
 			}
 		},
 		loadSettings: function(){
@@ -70,6 +71,12 @@ export default {
 						        //add data to store
 						        this.$root.store.settings.prestashop.domain = data.domain
 						        this.$root.store.settings.prestashop.key = data.key
+							}
+							if(doc.id === 'tag'){
+								let data = doc.data();
+				        
+						        //add data to store
+						        this.$root.store.settings.tag.tree = data.tree
 							}
 						})
 				        

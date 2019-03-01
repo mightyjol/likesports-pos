@@ -11,6 +11,9 @@ let initialStore = {
         	routes: {
         		ping: '/'
         	}
+		},
+		tag:{
+			tree: '{[]}'
 		}
 	},
 	inventory: {},
@@ -34,12 +37,7 @@ let initialStore = {
 		},
 	},
 	manufacturers: {},
-	tags: {
-		nike: {
-			ref: 'nike',
-			name: 'Nike'
-		}
-	},
+	tags: {},
 	failed: {}
 };
 

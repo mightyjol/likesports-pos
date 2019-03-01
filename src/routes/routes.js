@@ -10,6 +10,9 @@ import Settings from './../views/Settings.vue'
 import Error404 from './../views/Error404.vue'
 import UserSettingsComponent from './../components/settings/UserComponent.vue'
 import PrestashopSettingsComponent from './../components/settings/PrestashopComponent.vue'
+import PrinterSettingsComponent from './../components/settings/PrinterComponent.vue'
+import PaymentTerminalSettingsComponent from './../components/settings/PaymentTerminalComponent.vue'
+import TagsSettingsComponent from './../components/settings/TagsComponent.vue'
 
 export default [
 	{ 
@@ -90,6 +93,30 @@ export default [
             path: '/prestashop',
             name: 'prestashop',
             component: PrestashopSettingsComponent,
+            meta: {
+              keepAlive: false
+            }
+          },
+          {
+            path: '/printer',
+            name: 'printer',
+            component: PrinterSettingsComponent,
+            meta: {
+              keepAlive: false
+            }
+          },
+          {
+            path: '/payment',
+            name: 'terminal',
+            component: PaymentTerminalSettingsComponent,
+            meta: {
+              keepAlive: false
+            }
+          },
+          {
+            path: '/tags',
+            name: 'tags',
+            component: TagsSettingsComponent,
             meta: {
               keepAlive: false
             }

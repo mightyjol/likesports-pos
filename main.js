@@ -51,6 +51,15 @@ app.on('before-quit', function(){
 /*      IPC       */
 /******************/
 
+ipcMain.on('getPrinters', () =>{
+  let printers = win.webContents.getPrinters();
+  win.webContents.send('printers', printers);
+});
+
+ipcMain.on('print', (config) =>{
+  return;
+});
+
 ipcMain.on('checkForUpdate', () =>{
   autoUpdater.checkForUpdates();
 });
