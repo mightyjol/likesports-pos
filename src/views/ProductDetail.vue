@@ -1,6 +1,6 @@
 <template>
 	<div id="productDetail">
-		<el-form :model="product"  @submit.prevent.native="">
+		<el-form :model="product" @submit.prevent.native="">
 			<h4>{{title}}</h4><br>
 			<p v-if="errorMessage">
 				{{errorMessage}}
@@ -27,6 +27,17 @@
 			isPartOfPack <input type="checkbox" v-model="product.metadata.isPartOfPack"><br>
 			name <input type="text" v-model="product.metadata.name" placeholder="description"><br>
 			description <textarea v-model="product.metadata.description" placeholder="description"></textarea><br>
+			 
+			<el-select v-model="product.size_type">
+				<el-option
+					v-for="s in sizes"
+					:key="s.ref"
+					:label="s.name"
+					:value="s.ref"
+				>
+				</el-option>
+			</el-select>
+			 
 			<br>----------<br>
 			prix <br>
 			Prix achat <input type="number" step="0.01" v-model="product.price.pa"><br>
@@ -70,7 +81,40 @@
 			    </el-option>
 			</el-select>
 
-			//categorisation - built on the fly by tags <br>
+			<br>
+			<br>----------<br>
+			<div v-if="product.size_type != null">
+				Codes barres <br>
+				<el-form @submit.prevent.native="addBarcode">
+					<el-form-item>
+						Add a barcode
+						<el-select v-model="newBarcodeSize" filterable default-first-option>
+							<el-option
+								v-for="s in availableSizes"
+								:key="s.name"
+								:label="s.label"
+								:value="s.name"
+							>
+							</el-option>
+						</el-select>
+						<el-input v-model="newBarcode"></el-input>
+						<el-button native-type="submit" type="primary" @click="addBarcode">
+							Add a new barcode
+						</el-button>
+					</el-form-item>
+				</el-form>
+				<el-table
+					:data="product.barcodes"
+
+				>
+					<el-table-column
+						prop="name"
+						label="Size"
+					>
+					</el-table-column>
+				</el-table>
+			</div>
+			
 
 			<br>----------<br>
 			quantities and stock <br>
@@ -113,6 +157,20 @@ export default {
 		},
 		tags: function() {
 			return this.$root.store.tags;
+		},
+		sizes: function() {
+			return this.$root.store.sizes;
+		},
+		availableSizes: function(){
+			let result = [];
+			if( !this.product.size_type ) return [];
+			for( let i of this.sizes[this.product.size_type].content ){
+				result.push({
+					label: i,
+					name: i
+				})
+			}
+			return result;
 		}
 	},
 	methods: {
@@ -233,13 +291,19 @@ export default {
 			        });
 				})
 			}
+		},
+		addBarcode: function() {
+			let code = this.newBarcode;
+
 		}
 	},
 	data: function () {
 		return {
 			errorMessage: '',
 			title: this.isNew ? 'New Product' : this.ref,
-			ref: this.$route.params.ref
+			ref: this.$route.params.ref,
+			newBarcode: '',
+			newBarcodeSize: undefined
 		}
 	}
 }

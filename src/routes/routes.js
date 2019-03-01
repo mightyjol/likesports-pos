@@ -13,6 +13,7 @@ import PrestashopSettingsComponent from './../components/settings/PrestashopComp
 import PrinterSettingsComponent from './../components/settings/PrinterComponent.vue'
 import PaymentTerminalSettingsComponent from './../components/settings/PaymentTerminalComponent.vue'
 import TagsSettingsComponent from './../components/settings/TagsComponent.vue'
+import SizeSettingsComponent from './../components/settings/SizeComponent.vue'
 
 export default [
 	{ 
@@ -117,6 +118,14 @@ export default [
             path: '/tags',
             name: 'tags',
             component: TagsSettingsComponent,
+            meta: {
+              keepAlive: false
+            }
+          },
+          {
+            path: '/size',
+            name: 'size',
+            component: SizeSettingsComponent,
             meta: {
               keepAlive: false
             }

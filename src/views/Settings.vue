@@ -17,6 +17,9 @@
 			<router-link :to="{ name: 'tags' }">
 				<button>Brands and tags</button>
 			</router-link>	
+			<router-link :to="{ name: 'size' }">
+				<button>Sizes sets</button>
+			</router-link>	
 		</nav>
 		<keep-alive>
 	    	<router-view v-if="$route.meta.keepAlive" />

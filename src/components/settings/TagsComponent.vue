@@ -3,7 +3,26 @@
 		<h6>Tags Settings</h6><br>
 		brands  <br>
 		-------------------- <br>
-		<el-table>
+		<el-table
+			:data="manufacturers"
+			stripe
+			border
+		>
+			<el-table-column
+				prop="name"
+     	 		label="Name"
+      		>
+			</el-table-column>
+			<el-table-column>
+				<el-button @click="updateManufacturer">
+					update
+				</el-button>
+			</el-table-column>
+			<el-table-column>
+				<el-button type="danger" @click="deleteManufacturer">
+					delete
+				</el-button>	
+			</el-table-column>
 		</el-table>
 		<br>
 		--------------
@@ -131,11 +150,20 @@ export default {
 			}
 
 			return obj;
-		}
+		},
+		updateManufacturer: function(){},
+		deleteManufacturer: function(){}
 	},
 	computed: {
 		tags: function() {
 			return this.$root.store.tags;
+		},
+		manufacturers: function() {
+			let manufacturers = []
+			for(let m in this.$root.store.manufacturers){
+				manufacturers.push(this.$root.store.manufacturers[m])
+			}
+			return manufacturers;
 		}
 	},
 	data: function () {

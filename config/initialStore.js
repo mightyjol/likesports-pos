@@ -31,13 +31,17 @@ let initialStore = {
 				pa: 0.00,
 				pvttc: 0.00
 			},
-			manufacturer: undefined,
+			manufacturer: null,
 			tags: [],
-			qty_all: 0
+			qty_total: 0,
+			qty : {},
+			size_type: null,
+			barcodes: []
 		},
 	},
 	manufacturers: {},
 	tags: {},
+	sizes: {},
 	failed: {}
 };
 

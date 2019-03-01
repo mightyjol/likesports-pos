@@ -41,6 +41,7 @@ export default {
 				this.loadInventory();
 				this.loadManufacturers();
 				this.loadTags();
+				this.loadSizes();
 				this.loadProducts();
 			}
  		});	 
@@ -52,8 +53,8 @@ export default {
 				this.bIsSyncing = false;
 				console.log(this.$root.store)
 				 
-				//this.$router.replace({ name:'productDetail', params:{ ref:'new' } });
-				this.$router.replace({ name:'tags' });
+				this.$router.replace({ name:'productDetail', params:{ ref:'new' } });
+				//this.$router.replace({ name:'size' });
 			}
 		},
 		loadSettings: function(){
@@ -279,6 +280,58 @@ export default {
 				}
 			});		 
 		},
+		loadSizes: function(){
+			this.$root.store.user.client.collection('size')
+	 		.onSnapshot(collection => {
+			    if (collection.empty) {
+			    	console.log('no sizes')
+			    	if(this.$route.name === 'load'){
+			    		this.bIsSizesLoaded = true;
+			        	this.checkIfDone();
+			    	}
+			        return
+			    } else {
+			    	console.log('sizes loaded')
+
+					collection.docChanges().forEach(change => {
+						if (change.type === "removed") {
+							console.log("deleted size entry")
+			                delete this.$root.store.sizes[change.doc.id];
+			                this.$root.store.sizes = Object.assign({}, this.$root.store.sizes);
+			            }
+			            else{
+			            	console.log("updated size entry")
+			            	let elem = {};
+			            	let data = change.doc.data();
+			            	elem[change.doc.id] = data;
+			            	this.$root.store.sizes = Object.assign({}, this.$root.store.sizes, elem);
+			            }
+		    		});
+
+			        if(this.$route.name === 'load'){
+			        	collection.forEach(doc => {
+				    		let data = doc.data();
+				    		this.$root.store.sizes[doc.id] = data;
+				    		console.log('added', this.$root.store.sizes[doc.id]);	
+				    	});
+		 				this.bIsSizesLoaded = true;
+				        this.checkIfDone();
+				    }			    
+			    }
+			},
+			e => {
+				if(this.$route.name === 'load'){
+					this.$alert(e, 'Error: sizes', {
+  						confirmButtonText: 'OK',
+  						type: 'error',
+  						callback: action => {
+  							this.$store = {};
+				            this.logout();
+			          	}
+  					});
+				}
+			});		 
+		},
 		loadProducts: function(){
 			this.$root.store.user.client.collection('product')
 	 		.onSnapshot(collection => {
@@ -339,6 +392,7 @@ export default {
 				this.bIsInventoriesLoaded &&
 				this.bIsManufacturersLoaded &&
 				this.bIsTagsLoaded &&
+				this.bIsSizesLoaded &&
 				this.bIsProductsLoaded;
 		}
 	},
@@ -348,6 +402,7 @@ export default {
 			bIsInventoriesLoaded: false,
 			bIsManufacturersLoaded: false,
 			bIsTagsLoaded: false,
+			bIsSizesLoaded: false,
 			bIsProductsLoaded: false,
 			bIsSyncing: true
 		}
