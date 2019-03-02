@@ -13,6 +13,7 @@ let config = {
 	firebase:{
 		apiKey: "AIzaSyDciuyQz7mIs0ckZHXJGpQNM6zIOPhhXWc",
 		databaseURL: "https://web-pos-a3642.firebaseio.com",
+		storageBucket: "web-pos-a3642.appspot.com",
 		projectId: "web-pos-a3642"
 	}
 };

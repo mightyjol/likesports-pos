@@ -128,19 +128,20 @@
 				<el-tab-pane label="Images">
 					simple upload <br>
 					<el-upload
-						ref="upload"
 						action=""
-						:auto-upload="false"
-						drag
+						ref="upload"
+						list-type="picture"
+						:show-file-list="false"
+						:on-success="uploadImage"
 					>
-						<div class="el-upload__tip" slot="tip">jpg/png files with a size less than 500kb</div>
+						<el-button size="small" type="primary">Click to upload</el-button>
 					</el-upload>
-					<br>
-					<el-button size="small" type="success" @click="uploadImage">upload to server</el-button>
+					<div v-for="img in product.images">
+						<img :src="img.url">
+					</div>
 				</el-tab-pane>
 				<el-tab-pane label="Stock">
-					simple upload <br>
-
+					current stock <br>
 				</el-tab-pane>
 			</el-tabs> 
 		</el-form>
@@ -162,7 +163,6 @@ export default {
 	},
 	created: function(){
 		 
-	 
 	},
 	async beforeRouteLeave (to, from, next){
 		console.log('save')
@@ -349,8 +349,18 @@ export default {
 		removeBarcode: function(size, code) {
 			Utils.arrayRemoveByValue(this.product.barcodes[size].codes, code)		 
 		},
-		uploadImage: function(){
-
+		uploadImage: function(event, file){
+			this.$storage.ref()
+			.child(this.$root.store.user.client_name).child(this.ref + '/' + this.images.length + 1).put(file.raw)
+			.then(data => {
+				data.ref.getDownloadURL().then(url => {
+					this.product.images.push(url)
+				})
+			})	 
+			.catch(e => {
+				console.error(e)
+			})
+			 
 		}
 	},
 	data: function () {
@@ -360,7 +370,8 @@ export default {
 			ref: this.$route.params.ref,
 			newBarcode: '',
 			newBarcodeSize: undefined,
-			images: []
+			dialogVisible: false,
+			dialogImageUrl: '',
 		}
 	}
 }

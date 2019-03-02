@@ -17,6 +17,7 @@ const firebase = require('firebase');
 firebase.initializeApp(config.firebase)
  
 const db = firebase.firestore();
+const storage = firebase.storage();
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
@@ -36,6 +37,7 @@ router.beforeEach((to, from, next) => {
 
 Vue.prototype.$firebase = firebase; 
 Vue.prototype.$db = db; 
+Vue.prototype.$storage = storage; 
 
 const app = new Vue({
 	router,
