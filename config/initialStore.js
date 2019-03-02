@@ -36,7 +36,7 @@ let initialStore = {
 			qty_total: 0,
 			qty : {},
 			size_type: null,
-			barcodes: []
+			barcodes: {}
 		},
 	},
 	manufacturers: {},

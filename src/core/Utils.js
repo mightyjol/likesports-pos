@@ -26,4 +26,9 @@ export default class Utils{
 	static capitalize(str) {
 		return str.charAt(0).toUpperCase() + str.substr(1)
 	}
+
+	static arrayRemoveByValue(array, value){
+		let index = array.indexOf(value);
+		if (index !== -1) array.splice(index, 1);
+	}
 }

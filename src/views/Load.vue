@@ -337,7 +337,6 @@ export default {
 	 		.onSnapshot(collection => {
 			    if (collection.empty) {
 			    	console.log('no products')
-			    	this.$root.store.products = Object.assign({})
 			    	if(this.$route.name === 'load'){
 			    		this.bIsProductsLoaded = true;
 			        	this.checkIfDone();
