@@ -53,8 +53,8 @@ export default {
 				this.bIsSyncing = false;
 				console.log(this.$root.store)
 				 
-				this.$router.replace({ name:'productDetail', params:{ ref:'new' } });
-				//this.$router.replace({ name:'size' });
+				//this.$router.replace({ name:'productDetail', params:{ ref:'new' } });
+				this.$router.replace({ name:'home' });
 			}
 		},
 		loadSettings: function(){

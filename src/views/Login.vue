@@ -20,7 +20,10 @@
 					    </el-form-item>
 			    	</el-form>
 				</div>	 
-			</el-card>   
+			</el-card>
+			<router-link :to="{ name:'signup' }">
+				<span class="link">Je souhaite créer un compte</span>
+			</router-link>   
 		</el-col>
 	</el-row>
    
@@ -36,6 +39,11 @@ export default {
 			},
 			loginProcess: false
 		}
+	},
+	created: function(){
+		if(this.$route.params.new_account == true){
+			this.$message('Vous allez recevoir un email de confirmation');
+		} 
 	},
 	methods: {
 		checkData: async function(e) {	

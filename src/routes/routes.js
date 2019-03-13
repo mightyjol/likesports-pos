@@ -1,6 +1,7 @@
 import App from './../App.vue'
 import Update from './../views/Update.vue'
 import Login from './../views/Login.vue'
+import Signup from './../views/Signup.vue'
 import Load from './../views/Load.vue'
 import Home from './../views/Home.vue'
 import Inventory from './../views/Inventory.vue'
@@ -28,6 +29,14 @@ export default [
     path: '/login',
     name: 'login', 
     component: Login,
+    meta: {
+      keepAlive: false
+    }
+  },
+  { 
+    path: '/signup',
+    name: 'signup', 
+    component: Signup,
     meta: {
       keepAlive: false
     }

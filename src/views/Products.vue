@@ -1,13 +1,10 @@
 <template>
 	<div>
-		<h4>Products</h4><br>
-		<p v-if="errorMessage">
-			{{errorMessage}}
-		</p>
+		<h4>Products</h4>
 		<router-link :to="{ name: 'productDetail', params: { ref: 'new' }}">
-			<button>
+			<el-button type="primary">
 				add a new product
-			</button>
+			</el-button>
 		</router-link>		
 		<br>----------------------<br>
 		Filters	
@@ -20,34 +17,46 @@
 		<div v-for="i in inventories">
 			| {{ i.name }}<input type="checkbox" :value="i.slug" :checked="checkedInventories[i.slug]" @change="check($event)"> |
 		</div>
-		<br>----------------------<br>
-		<table>
-			<thead>
-				 
-				<tr>
-					<th>Ref</th>
-					<th>Name</th>
-					<th>Update</th>
-					<th>Delete</th>
-				</tr>
-			</thead>
-			<tr v-for='p in products'>
-				<td>{{ p.ref }}</td>
-				<td>{{ p.metadata.name }}</td>
-				<td>
-					<router-link :to="{ name:'productDetail', params: {'ref': p.slug} }">
-						<button>
-							update		
-						</button>
+		<h5>All products</h5>
+		<el-table :data="products">
+			<el-table-column
+				label="Ref"
+				prop="ref"
+			>
+				
+			</el-table-column>
+			<el-table-column
+				label="Name"
+				prop="metadata.name"
+			>
+				
+			</el-table-column>
+			<el-table-column
+				label="update"
+			>
+				<template slot-scope="scope">
+					<router-link :to="{ name:'productDetail', params: {'ref': scope.row.ref} }">
+						<el-button>
+							update	
+						</el-button>
 					</router-link>	
-				</td>
-				<td>
-					<button @click="deleteProduct(p.slug)">
-						delete
-					</button>
-				</td>
-			</tr>
-		</table>
+				</template>
+			</el-table-column
+				label="delete"
+			>
+				<template slot-scope="scope">
+					<router-link :to="{ name:'productDetail', params: {'ref': scope.row.ref} }">
+						<el-button type="danger" @click="deleteProduct(scope.row.ref)">
+							delete	
+						</el-button>
+					</router-link>	
+				</template>
+			<el-table-column
+				label="delete"
+			>
+				
+			</el-table-column>
+	 	</el-table>
 	</div>
 </template>
 
@@ -60,8 +69,7 @@ export default {
 		}
 		else{
 			for(let i in this.$root.store.inventory){
-				this.checkedInventories[i] = 
-					this.$root.store.user.settings.inventory.default.includes(i);
+				this.checkedInventories[i] = this.$root.store.user.settings.inventory.default.includes(i);
 			}
 		}
 	},
@@ -73,7 +81,6 @@ export default {
 		    else{
 		    	this.checkedInventories[e.target.value] = false
 		    }
-		    console.error(this.checkedInventories)
 		},
 		checkAll: function(){
 			console.error('check all')
@@ -84,19 +91,25 @@ export default {
 			this.checkedInventories = Object.assign({}, full);
 		},
 		uncheckAll: function(){
-			console.error('uncheck all')
 			this.checkedInventories = {};
 		},
 		deleteProduct: function(ref){
 			if(this.$root.store.products[ref] === undefined){
 				console.error('wrong reference was passed', ref);
-				this.errorMessage = 'an error has occured';
+				this.$message({
+		          	showClose: true,
+		         	message: 'wrong reference was passed',
+		         	type: 'error'
+		        });
 			}
 			else{
 				this.$root.store.user.client.collection('product').doc(ref).delete()
 				.catch(e => {
-					console.error = e
-					this.errorMessage = e
+					this.$message({
+			          	showClose: true,
+			         	message: e,
+			         	type: 'error'
+			        });
 				});
 			}	
 		}
@@ -107,17 +120,19 @@ export default {
 		},
 		products: function(){
 			let allProducts = Object.assign({}, this.$root.store.products);
-			let products = {};
+			let products = [];
 
 			delete allProducts['new']
 
-			products = allProducts;
+			for(let i in allProducts){
+				products.push(allProducts[i])
+			}
+
 			return products;
 		}
 	},
 	data: function () {
 		return {
-			errorMessage: '',
 			checkedInventories: {},
 		}
 	}

@@ -72,7 +72,7 @@ export default {
 		next();
 	},
 	created: function() {
-		this.tagTree = this.addIdDeep(JSON.parse(this.$root.store.settings.tag.tree))
+		this.tagTree = this.addIdDeep(JSON.parse(this.$root.store.settings.tag.tree)) || []
 		 
 	},
 	methods: {

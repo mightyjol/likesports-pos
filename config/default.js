@@ -4,6 +4,11 @@ let config = {
 		ping: '/',
 		prestashop: {
 			updateSettings: '/prestashop/settings/update'
+		},
+		security: {
+			user: {
+				create: '/signup'
+			}
 		}
 	},
 	support: {

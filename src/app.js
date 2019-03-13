@@ -43,6 +43,7 @@ const app = new Vue({
 	router,
 	data: {
 		store: initialStore, // make the store reactive again
+		api: config.apiRoutes,
 		products: {}
 	},
 	created: function() {

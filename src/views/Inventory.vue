@@ -1,66 +1,147 @@
 <template>
-	<div>
-		<h4>Inventory</h4><br>
-		<p v-if="errorMessage">
-			{{errorMessage}}
-		</p>
-		<AddInventory v-if="!bHasNoInventory" />
-		<IfHasInventory>
-			<table>
-				<div v-for='i in inventory'>
-					<table>
-						<tr>
-							<td>{{i.name}}</td>
-							<td>{{i.productCount}}</td>
-							<td>
-								<button>
-									voir tout les produits
-								</button>
-							</td>
-							<td v-if="$root.isAdmin" v-on:click="deleteInventory(i.name)">
-								<button>
-									delete this
-								</button>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</table>
-		</IfHasInventory>	
-	</div>
+	<el-row id="inventory">
+		<el-col>
+			<h4>Inventory</h4><br>
+			<el-form class="inline-form" v-if="this.$root.store.user.isAdmin" @submit.native.prevent="addInventory">
+				<el-input v-model="newInventoryName" type="text" placeholder="new inventory name" />
+				<el-button type="primary" @click="addInventory">
+					add a new inventory
+				</el-button>
+			</el-form>
+			<div v-if="bHasInventory"> 
+				<el-table :data="inventory">
+					<el-table-column
+						label="Name"
+					>
+						<template slot-scope="scope">
+							{{ scope.row.getName() }} 
+						</template>
+					</el-table-column>
+					<el-table-column
+						label="product count"
+					>
+						<template slot-scope="scope">
+							{{ scope.row.getProductCount() }} 
+						</template>
+					</el-table-column>
+					<el-table-column
+						label="Voir les produits"
+					>
+						<template slot-scope="scope">
+							<el-button plain>
+								<i class="far fa-eye"></i>
+							</el-button>
+						</template>
+					</el-table-column>
+					<el-table-column
+						v-if="$root.isAdmin"
+						label="Delete"
+					>
+						<template slot-scope="scope">
+							<el-button type="danger" @click="confirmDelete(scope.row)">
+								<i class="fas fa-times"></i>
+							</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</div>
+			<el-alert v-else>
+				There are no inventories
+			</el-alert>
+		</el-col>
+	</el-row>
 </template>
 
 <script>
-import AddInventoryComponent from './../components/inventory/AddInventoryComponent.vue';
-import IfHasInventoryComponent from './../components/inventory/IfHasInventoryComponent.vue';
-export default {
-	components: {
-		'AddInventory' : AddInventoryComponent,
-		'IfHasInventory' : IfHasInventoryComponent
-	},
+import { Inventory } from './../core/Inventory.js';
+
+export default { 
 	methods: {
-		deleteInventory: function(name){
-			this.errorMessage = ''
-			
-			this.$root.store.user.client.collection('inventory').doc(name).delete()
-			.then(() => {})
-			.catch(e => {
+		getName: (i) => i.getName(),
+		getProductCount: (i) => i.getProductCount(),
+		confirmDelete: function(inventory){
+			console.error(inventory)
+			this.$confirm('This will delete all associated quantities', 'Warning', {
+				confirmButtonText: 'Confirm',
+				cancelButtonText: 'Cancel',
+				type: 'warning'
+			}).then(() => {
+				 inventory.delete()
+				.then(() => {
+					this.$message({
+		          		message: 'inventory deleted successfully',
+	          			type: 'success'
+			        })
+				})
+				.catch(e => {
+					console.error(e)
+					this.$notify({
+			          showClose: true,
+			          message: e,
+			          type: 'error'
+			        })
+				})
+			}).catch(() => {});
+		},
+		addInventory: function(){
+			if(this.$root.store.inventory[this.newInventoryName] !== undefined){
+				this.$message({
+					showClose: true,
+	          		message: 'an inventory with the same name already exists',
+          			type: 'error'
+		        })
+				return;
+			}
+
+			let newInventory = undefined;
+			try{
+				newInventory = new Inventory(this.$root.store.user.client, {
+					name: this.newInventoryName
+				})
+				console.error(newInventory)
+			}
+			catch(e){
 				console.error(e)
-				this.errorMessage = e;
+				return this.$message({
+	          		message: e.message,
+          			type: 'warning'
+		        })
+			}
+
+			newInventory.create()
+			.then(() => {
+				this.newInventoryName = '';
 			})
+			.catch(e => {
+				console.error(e);
+				this.$message({
+					showClose: true,
+	          		message: 'an inventory with the same name already exists',
+          			type: 'error'
+		        })
+			});
+			return;
 		}
 	},
 	computed: {
 		inventory: function(){
-			return this.$root.store.inventory
+			let inventories = []
+			for(let i in this.$root.store.inventory){
+				let data = this.$root.store.inventory[i];
+
+				let newInventory = new Inventory(this.$root.store.user.client, data)
+				inventories.push(newInventory);
+			}
+
+			return inventories;
 		},
-		bHasNoInventory: function(){
-			return Object.keys(this.$root.store.inventory).length === 0
+		bHasInventory: function(){
+			return Object.keys(this.$root.store.inventory).length !== 0
 		}
 	},
 	data: function () {
 		return {
-			errorMessage: ''
+			newInventoryName: ''
 		}
 	}
 }
