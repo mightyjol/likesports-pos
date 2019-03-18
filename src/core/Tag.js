@@ -1,36 +1,28 @@
 import Utils from './Utils.js'
+import { FirestoreComponent } from './FirestoreComponent.js'
+import { NameError, PriorityError, SetError } from './error/PropsError.js'
 
-export class Tag{
+export class Tag extends FirestoreComponent{
 	constructor(client = undefined, init = {}){
-		if(client === undefined) return undefined;
-
-		this.client = client; 
-		this.name = init.name.charAt(0).toUpperCase() + init.name.substr(1) || undefined; 
+		super(client, init);
+		
 		this.priority = init.priority || 0;
+		this.set = init.set || undefined;
 
 		this.collection = 'tag'
 		return this
 	}
 
-	isValid(){
-		if( this.client === undefined){
-			return false;
-		}
-
-		if( 
-			this.name === undefined || 
-			this.name === null ||
-			this.name.length < 2
-		){
-			return false;
-		}
-		
-		
+	isValid(){	
 		if( this.priority < 0 || this.priority > 50 ){
-			return false;
+			 throw new PriorityError('priority property is invalid:', this.priority)
 		}
 
-		return true;
+		if( this.set === undefined || this.set.length < 3){
+			throw new SetError('set property is invalid:', this.priority)
+		}
+
+		return super.isValid();
 	}
 
 	save(){
@@ -46,17 +38,21 @@ export class Tag{
 		});
 	}
 
-	setName(name = undefined){
-		this.name = name;
+	isValidName(name = this.name){
+		if(name === undefined) throw new NameError('name property is invalid:', this.name)
+		if(name === null) throw new NameError('name property is invalid:', this.name)
+		if(name.length < 2) throw new NameError('name property is too short (min 2 chars):', this.name)
+		
+		return true;
 	}
 
-	getName(){
-		return this.name;
+	getSet(){
+		return this.set;
 	}
 
-	getRef(){
-		let name = this.name;
-		if( name === undefined ) return undefined;
-		return Utils.slugify(name)
+	getProps(props = {}){
+		props.priority = this.priority;
+
+		return super.getProps(props);
 	}
 }

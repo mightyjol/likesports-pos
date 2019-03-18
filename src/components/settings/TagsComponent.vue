@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<h6>Tags Settings</h6><br>
+			<!--
 		brands  <br>
 		-------------------- <br>
 		<el-table
@@ -27,6 +28,8 @@
 		<br>
 		--------------
 		<br>
+		tags <br>
+	
 		Category tree <br>
 		<el-select 
 			v-model="tagsToAdd" 
@@ -58,6 +61,7 @@
 		<el-button @click="saveTree">
 			Save the current tree 
 		</el-button>
+		-->
 	</div>
 </template>
 
@@ -68,12 +72,11 @@ import Utils from './../../core/Utils.js'
 export default {
 	async beforeRouteLeave (to, from, next){
 		console.log('save')
-		await this.saveTree();
+		//await this.saveTree();
 		next();
 	},
 	created: function() {
-		this.tagTree = this.addIdDeep(JSON.parse(this.$root.store.settings.tag.tree)) || []
-		 
+		//this.tagTree = this.addIdDeep(JSON.parse(this.$root.store.settings.tag.tree)) || [] 
 	},
 	methods: {
 		handleDrop(draggingNode, dropNode, dropType, ev) {

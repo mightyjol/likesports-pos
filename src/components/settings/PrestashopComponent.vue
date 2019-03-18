@@ -1,10 +1,7 @@
 <template>
 	<div>
 		<h6>Prestashop Settings</h6><br>
-		<p v-if="errorMessage">
-			{{errorMessage}}
-		</p>
-		<table>
+		<table v-loading="">
 			<tr>
 				<td>
 					<input type="text" v-model="prestashop.domain" placeholder="prestashop domain" v-on:input="webserviceUpdate"><br>
@@ -56,7 +53,11 @@ export default {
 			let result = await this.prestashopPing(this.prestashop.domain, this.prestashop.key);
 
 			if(showError && !result){
-				this.errorMessage = 'une erreur s\'est produite'
+				this.$message({
+					type: "error",
+					message: 'une erreur s\'est produite',
+					showClose: true
+				})
 			}
 			else if(showError && result){
 				this.bIsPingSuccessfull = true;
@@ -65,6 +66,7 @@ export default {
 			this.bIsWebserviceUp = result;
 		},
 		pingAndUpdate:async function(){
+			
 			await this.ping(true);
 			if(this.bIsWebserviceUp){
 				this.$root.store.user.client.update({
@@ -77,7 +79,11 @@ export default {
 				.catch(e => {
 					console.error(e);
 					this.bIsWebserviceUp = false;
-					this.errorMessage = e;
+					this.$message({
+						type: "error",
+						message: e,
+						showClose: true
+					})
 				})
 			}
 		},
@@ -102,9 +108,9 @@ export default {
 	},
 	data: function () {
 		return {
-			errorMessage: '',
 			bIsWebserviceUp: false,
 			bIsWebserviceUpdated: false,
+			bIsPinging: false,
 			bIsPingSuccessfull: false,
 			oldKey: '',
 			oldDomain: ''

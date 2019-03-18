@@ -60,7 +60,7 @@ export default {
 		getName: (i) => i.getName(),
 		getProductCount: (i) => i.getProductCount(),
 		confirmDelete: function(inventory){
-			console.error(inventory)
+			//console.error(inventory)
 			this.$confirm('This will delete all associated quantities', 'Warning', {
 				confirmButtonText: 'Confirm',
 				cancelButtonText: 'Cancel',

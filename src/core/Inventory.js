@@ -9,11 +9,6 @@ export class Inventory extends FirestoreComponent{
 		this.productCount = init.productCount || 0
 	}
 
-	isValid(){
-		super.isValid();
-		return true;
-	}
-
 	create(){
 		let props = {
 			productCount: 0

@@ -17,29 +17,7 @@ let initialStore = {
 		}
 	},
 	inventory: {},
-	products: {
-		new: {
-			ref: '',
-			metadata: {
-				name: '',
-				description: '',
-				active: true,
-				online: false,
-				isPartOfPack: false
-			},
-			price: {
-				pa: 0.00,
-				pvttc: 0.00
-			},
-			manufacturer: null,
-			tags: [],
-			qty_total: 0,
-			qty : {},
-			size_type: null,
-			barcodes: {},
-			images: {}
-		},
-	},
+	products: {},
 	manufacturers: {},
 	tags: {},
 	sizes: {},

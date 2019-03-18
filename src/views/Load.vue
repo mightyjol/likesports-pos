@@ -54,7 +54,7 @@ export default {
 				console.log(this.$root.store)
 				 
 				//this.$router.replace({ name:'productDetail', params:{ ref:'new' } });
-				this.$router.replace({ name:'home' });
+				this.$router.replace({ name:'prestashop' });
 			}
 		},
 		loadSettings: function(){
@@ -72,6 +72,7 @@ export default {
 						        //add data to store
 						        this.$root.store.settings.prestashop.domain = data.domain
 						        this.$root.store.settings.prestashop.key = data.key
+						        this.$root.store.settings.prestashop.image_key = data.image_key
 							}
 							if(doc.id === 'tag'){
 								let data = doc.data();

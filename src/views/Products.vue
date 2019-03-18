@@ -5,20 +5,22 @@
 			<el-button type="primary">
 				add a new product
 			</el-button>
-		</router-link>		
-		<br>----------------------<br>
-		Filters	
-		<button @click="checkAll()">
+		</router-link>	
+		<div v-if="inventories.length">
+			Filters	
+			<button @click="checkAll()">
 			check all
-		</button>
-		<button @click="uncheckAll()">
-			uncheck all
-		</button>
-		<div v-for="i in inventories">
-			| {{ i.name }}<input type="checkbox" :value="i.slug" :checked="checkedInventories[i.slug]" @change="check($event)"> |
-		</div>
+			</button>
+			<button @click="uncheckAll()">
+				uncheck all
+			</button>
+			<div v-for="i in inventories">
+				| {{ i.name }}<input type="checkbox" :value="i.slug" :checked="checkedInventories[i.slug]" @change="check($event)"> |
+			</div>
+		</div>	
+		<br>----------------------<br>
 		<h5>All products</h5>
-		<el-table :data="products">
+		<el-table striped :data="products">
 			<el-table-column
 				label="Ref"
 				prop="ref"
@@ -27,34 +29,29 @@
 			</el-table-column>
 			<el-table-column
 				label="Name"
-				prop="metadata.name"
+				prop="name"
 			>
 				
 			</el-table-column>
 			<el-table-column
-				label="update"
+				label="Update"
 			>
-				<template slot-scope="scope">
+				<template v-slot="scope">
 					<router-link :to="{ name:'productDetail', params: {'ref': scope.row.ref} }">
 						<el-button>
 							update	
 						</el-button>
 					</router-link>	
 				</template>
-			</el-table-column
-				label="delete"
-			>
-				<template slot-scope="scope">
-					<router-link :to="{ name:'productDetail', params: {'ref': scope.row.ref} }">
-						<el-button type="danger" @click="deleteProduct(scope.row.ref)">
-							delete	
-						</el-button>
-					</router-link>	
-				</template>
+			</el-table-column>
 			<el-table-column
-				label="delete"
+				label="Delete"
 			>
-				
+				<template v-slot="scope">
+					<el-button type="danger" @click="deleteProduct(scope.row.ref)">
+						delete	
+					</el-button>
+				</template>
 			</el-table-column>
 	 	</el-table>
 	</div>
@@ -103,14 +100,20 @@ export default {
 		        });
 			}
 			else{
-				this.$root.store.user.client.collection('product').doc(ref).delete()
-				.catch(e => {
-					this.$message({
-			          	showClose: true,
-			         	message: e,
-			         	type: 'error'
-			        });
-				});
+				this.$confirm('There is no going bakc on this', 'Warning', {
+					confirmButtonText: 'Confirm',
+					cancelButtonText: 'Cancel',
+					type: 'warning'
+				}).then(() => {
+					this.$root.store.user.client.collection('product').doc(ref).delete()
+					.catch(e => {
+						this.$message({
+				          	showClose: true,
+				         	message: e,
+				         	type: 'error'
+				        });
+					});
+				}).catch(() => {});
 			}	
 		}
 	},
@@ -119,15 +122,13 @@ export default {
 			return this.$root.store.inventory
 		},
 		products: function(){
-			let allProducts = Object.assign({}, this.$root.store.products);
 			let products = [];
 
-			delete allProducts['new']
-
-			for(let i in allProducts){
-				products.push(allProducts[i])
+			for(let i in this.$root.store.products){
+				products.push(this.$root.store.products[i])
 			}
 
+			console.error(products)
 			return products;
 		}
 	},

@@ -1,5 +1,5 @@
 import Utils from './Utils.js'
-import { ClientError } from './error/ClientError.js'
+import { ClientError, CreateError } from './error/RepoError.js'
 import { NameError } from './error/PropsError.js'
 
 import firebase from 'firebase'
@@ -9,7 +9,10 @@ export class FirestoreComponent{
 		this.client = client; 
 		if(client === undefined) throw new ClientError('client is undefined');
 		
-		this.name = init.name.charAt(0).toUpperCase() + init.name.substr(1) || undefined;
+		this.ref = init.ref || undefined;
+
+		this.name = init.name || undefined;
+		if(this.name !== undefined) this.name = init.name.charAt(0).toUpperCase() + init.name.substr(1)
 		this.isValidName()
 
 		this.slug = Utils.slugify(this.name);
@@ -18,27 +21,21 @@ export class FirestoreComponent{
  	
  	isValid(){
  		if( this.client === undefined){
-			return false;
+			throw new ClientError('client is undefined')
 		}
 
 		if(this.isValidName(this.name)){
-			return false;
+			throw new NameError('name property is not valid', this.name)
 		}
+
+		return true
  	}
 
  	create(props){
-		let name = this.name;
-		let slug = Utils.slugify(this.name);
+		if(!this.isValid()) throw new CreateError(this.collection + ' object is invalid:', this);
 
-		if(!this.isValid()) return false;
-
-		props.name = name;
-		props.slug = slug;
-		
-		props.date_created = firebase.firestore.FieldValue.serverTimestamp();
-		props.date_last_update = firebase.firestore.FieldValue.serverTimestamp()
-
-		return this.client.collection(this.collection).doc(slug).set(props);
+		let fullProps = this.getProps(props)
+		return this.client.collection(this.collection).doc(slug).set(fullProps);
 	}
 
 	delete(){
@@ -55,7 +52,6 @@ export class FirestoreComponent{
 		return this.name;
 	}
 
-	//name class? 
 	isValidName(name = this.name){
 		if(name === undefined) throw new NameError('name property is invalid:', this.name)
 		if(name === null) throw new NameError('name property is invalid:', this.name)
@@ -65,7 +61,18 @@ export class FirestoreComponent{
 	}
 
 	getRef(){
-		let name = this.name;
-		return Utils.slugify(name)
+		if(this.ref !== undefined) return this.ref;
+		return Utils.slugify(this.name)
+	}
+
+	getProps(props = {}){
+		props.ref = this.getRef()
+		props.name = this.name
+		props.slug = this.slug
+
+		props.date_created = firebase.firestore.FieldValue.serverTimestamp()
+		props.date_last_update = firebase.firestore.FieldValue.serverTimestamp()
+
+		return props;
 	}
 }

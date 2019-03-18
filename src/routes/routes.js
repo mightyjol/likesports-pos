@@ -104,7 +104,7 @@ export default [
             name: 'prestashop',
             component: PrestashopSettingsComponent,
             meta: {
-              keepAlive: false
+              keepAlive: true
             }
           },
           {
