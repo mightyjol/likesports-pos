@@ -21,7 +21,7 @@ import { Tag } from './../../core/Tag.js';
 import { Product } from './../../core/Product.js';
 
 let convert = require('xml-js');
-
+//TODO pls refactor this 
 export default {
 	created: function () {
 		 
@@ -44,18 +44,13 @@ export default {
 				let json = convert.xml2js(xml, {compact: true});
 
 				for(let m of json.prestashop.manufacturers.manufacturer){
-					let init = {
-						name: m.name._cdata
-					}
-
-					let newTag = new Tag(this.$root.store.user.client, init);
-					let props = newTag.getProps()
-
+					let props = {}
 					props.id = m.id._cdata
+					props.name =  m.name._cdata
 					props.active = m.active._cdata === "1" ? true : false
 
 					this.idToName["Brands"][props.id] = m.name._cdata 
-					this.prestashopTags['Brands'][newTag.getRef()] = props
+					this.prestashopTags['Brands'][props.name] = props
 				}
 
 				this.bIsBrandsLoaded = true;
@@ -88,19 +83,14 @@ export default {
 						}
 					}
 
-					if(name == 'root' || name == 'racine') continue 
+					if(name == 'root' || name == 'racine') continue
 
-					let init = {
-						name: name
-					}
-
-					let newTag = new Tag(this.$root.store.user.client, init);
-					let props = newTag.getProps()
-
+					let props = {}
 					props.id = cat.id._cdata
-					
+					props.name = name
+
 					this.idToName["Categories"][props.id] = name
-					this.prestashopTags['Categories'][newTag.getRef()] = props.id
+					this.prestashopTags['Categories'][props.name] = props.id
 				}
 
 				console.error('categories loaded')
@@ -230,19 +220,18 @@ export default {
 					this.loadingProgress = parseFloat(((index++/totalProducts)*100).toFixed(2))
 					console.log('importing product ' + index + ' of ' + totalProducts)
 
-					let init = {}
-
-					let newProduct = new Product(this.$root.store.user.client);
-					let props = newProduct.getProps()
-
-					props.ref = p.reference._cdata
-					props.id = p.id._cdata
+					let props = {}
+					props.imported = true
+					props.importData = {
+						from: 'prestashop',
+						ref: p.reference._cdata,
+						id: p.id._cdata
+					}
 					props.active = p.active._cdata === "1" ? true : false
 					//TODO abstract that
-					props.link = 'https://likesports.eu/index.php?controller=product&id_product=' + props.id
+					props.link = 'https://likesports.eu/index.php?controller=product&id_product=' + props.importData.id
 
 					//name
-					props.name = ''
 					for(let name of p.meta_title.language){
 						if(name._attributes.id == this.languageId){
 							props.name = name._cdata
@@ -302,7 +291,7 @@ export default {
 						stockPromises.push(this.$http.get(p.associations.stock_availables.stock_available._attributes['xlink:href'] + '?ws_key=' + this.$root.store.settings.prestashop.key ))
 					}
 					else{
-						console.error(p.associations.stock_availables)
+						//console.error(p.associations.stock_availables)
 						for(let st of p.associations.stock_availables.stock_available){
 							stockPromises.push(this.$http.get(st._attributes['xlink:href'] + '?ws_key=' + this.$root.store.settings.prestashop.key ))
 						}
@@ -328,6 +317,25 @@ export default {
 					})
 
 					props.stocks = stocks
+
+					//merging stocks and combinations
+					let qties = {}
+					for(let i in stocks){
+						let stock = stocks[i]
+						let c = parseInt(stock.combination)
+						let q = parseInt(stock.qty)
+
+						if(c == 0){
+							qties.total = q
+							continue
+						}
+
+						if(q == 0) continue;
+						let id = combinations[c]
+						let s = this.idToName["Combinations"][id]
+						qties[s] = q
+					}
+					props.quantity = qties
 
 					//tags
 					let tags = {}
@@ -362,7 +370,7 @@ export default {
 					}
 					props.images = images
 
-					this.prestashopProducts[newProduct.getRef()] = props	
+					this.prestashopProducts[props.importData.id] = props	
 				}
 
 				
@@ -392,17 +400,35 @@ export default {
 			}
 		},
 		cleanAndImport: function(){
+			console.error('--------------------')
 			console.error(this.prestashopProducts)
-			console.error(this.prestashopTags)
+			console.error(this.idToName)
 			console.error(this.prestashopCombinations)
+			console.error('--------------------')
+	
 			this.loadingText = "cleaning dataset"
 			this.loadingStatus = "text"
 
 			let productBatch = this.$db.batch()
+
+			//adding products
 			for(let i in this.prestashopProducts){
+				console.error(this.prestashopProducts[i])
 				let newProduct = new Product(this.$root.store.user.client, this.prestashopProducts[i])
-				console.log(newProduct)
-				productBatch.set(this.$root.store.user.client.collection('product').doc(newProduct.getRef()), newProduct.getProps()/*, {merge:true}*/)
+				let props = newProduct.getProps();
+				let quantities = this.prestashopProducts[i].quantity
+
+				productBatch.set(
+					this.$root.store.user.client.collection('product').doc(newProduct.getRef()), 
+					props
+					/*, {merge:true}*/
+				)
+
+				productBatch.set(
+					this.$root.store.user.client.collection('product').doc(newProduct.getRef()).collection('inventory').doc('prestashop'), 
+					quantities
+					/*, {merge:true}*/
+				)
 			}
 
 			productBatch.commit()

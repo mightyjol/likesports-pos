@@ -5,6 +5,9 @@
 			<router-link :to="{ name:'productDetail' , params: { ref: 'new'}}">
 				<el-button type="primary">Add new product</el-button>
 			</router-link>
+			<router-link :to="{ name:'invoice' }">
+				<el-button>Invoice management</el-button>
+			</router-link>
 			<el-button @click="launchPOS">Launch POS mode</el-button>
 		</el-row>
 		<el-row>

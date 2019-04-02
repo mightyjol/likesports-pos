@@ -85,8 +85,8 @@ export class Product extends FirestoreComponent{
 	}
 
 	setLink(link = 'undefined'){
-		if(active == undefined || active == null) active = true
-		this.active = active == true
+		if(link == undefined || link == null) link = true
+		this.link = link
 	}
 
 	setDescription(desc = ''){

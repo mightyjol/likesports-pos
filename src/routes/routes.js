@@ -5,6 +5,7 @@ import Signup from './../views/Signup.vue'
 import Load from './../views/Load.vue'
 import Home from './../views/Home.vue'
 import Inventory from './../views/Inventory.vue'
+import Invoice from './../views/Invoice.vue'
 import Products from './../views/Products.vue'
 import ProductDetail from './../views/ProductDetail.vue'
 import Settings from './../views/Settings.vue'
@@ -58,6 +59,14 @@ export default [
         path: 'home',
         name: 'home',
         component: Home,
+        meta: {
+          keepAlive: false
+        }
+      },
+      {
+        path: 'invoice',
+        name: 'invoice',
+        component: Invoice,
         meta: {
           keepAlive: false
         }

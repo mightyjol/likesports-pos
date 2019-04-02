@@ -1,5 +1,7 @@
 import { CustomError } from './CustomError.js'
 
+//common
+export class RefError extends CustomError{}
 export class NameError extends CustomError{}
 
 //tags
