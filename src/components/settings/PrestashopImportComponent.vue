@@ -415,6 +415,8 @@ export default {
 			for(let i in this.prestashopProducts){
 				console.error(this.prestashopProducts[i])
 				let newProduct = new Product(this.$root.store.user.client, this.prestashopProducts[i])
+				newProduct.addToInventory('prestashop')
+
 				let props = newProduct.getProps();
 				let quantities = this.prestashopProducts[i].quantity
 

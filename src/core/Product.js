@@ -11,6 +11,7 @@ export class Product extends FirestoreComponent{
 		this.tags = []
 		this.images = []
 		this.barcode_search = []
+		this.inventory_search = []
 		this.barcodes = {}
 
 		this.price = {
@@ -34,6 +35,10 @@ export class Product extends FirestoreComponent{
 
 	create(props){
 		return super.create(props);
+	}
+
+	addToInventory(inventory){
+		this.inventory_search.push(inventory)
 	}
 
 	setPrice(price = {}){
@@ -104,6 +109,7 @@ export class Product extends FirestoreComponent{
 		props.description = this.description
 		props.barcodes = this.barcodes
 		props.barcode_search = this.barcode_search
+		props.inventory_search = this.inventory_search
 		props.active = this.active
 		props.size_type = this.size_type
 		props.link = this.link
