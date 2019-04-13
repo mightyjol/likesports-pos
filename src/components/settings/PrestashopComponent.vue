@@ -41,6 +41,7 @@ export default {
 		'PrestashopImportComponent' : PrestashopImportComponent
 	},
 	created: function () {
+		console.error(this.prestashop)
 		//check if prestashop is properly linked
 		this.oldDomain = this.prestashop.domain;
 		this.oldKey = this.prestashop.key;
@@ -69,11 +70,13 @@ export default {
 			
 			await this.ping(true);
 			if(this.bIsWebserviceUp){
-				this.$root.store.user.client.update({
-					"settings.prestashop.domain": domain,
-					"settings.prestashop.key": key
+				console.error('updating')
+				this.$root.store.user.client.collection('settings').doc('prestashop').update({
+					"domain": this.prestashop.domain,
+					"key": this.prestashop.key
 				})
 				.then(() => {
+					console.error('updated')
 					this.bIsWebserviceUp = true;
 				})
 				.catch(e => {

@@ -28,10 +28,7 @@ export class FirestoreComponent{
 			throw new ClientError('client is undefined')
 		}
 
-		if(this.isValidName(this.name)){
-			throw new NameError('name property is not valid', this.name)
-		}
-
+		this.isValidName(this.name)
 		return true
  	}
 
@@ -39,7 +36,7 @@ export class FirestoreComponent{
 		if(!this.isValid()) throw new CreateError(this.collection + ' object is invalid:', this);
 
 		let fullProps = this.getProps(props)
-		return this.client.collection(this.collection).doc(slug).set(fullProps);
+		return this.client.collection(this.collection).doc(this.slug).set(fullProps)
 	}
 
 	delete(){

@@ -402,16 +402,18 @@ export default {
 		cleanAndImport: function(){
 			console.error('--------------------')
 			console.error(this.prestashopProducts)
-			console.error(this.idToName)
-			console.error(this.prestashopCombinations)
+			console.error(this.prestashopTags)
 			console.error('--------------------')
 	
 			this.loadingText = "cleaning dataset"
 			this.loadingStatus = "text"
 
-			let productBatch = this.$db.batch()
+			//adding tags
+
 
 			//adding products
+			let productBatch = this.$db.batch()
+			
 			for(let i in this.prestashopProducts){
 				console.error(this.prestashopProducts[i])
 				let newProduct = new Product(this.$root.store.user.client, this.prestashopProducts[i])

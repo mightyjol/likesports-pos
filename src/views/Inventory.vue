@@ -84,6 +84,7 @@ export default {
 			}).catch(() => {});
 		},
 		addInventory: function(){
+			//does inventory exists already? (check server)
 			if(this.$root.store.inventory[this.newInventoryName] !== undefined){
 				this.$message({
 					showClose: true,
