@@ -1,6 +1,6 @@
 import Utils from './Utils.js'
 import { ClientError, CreateError } from './error/RepoError.js'
-import { NameError } from './error/PropsError.js'
+import { RefError, NameError } from './error/PropsError.js'
 
 import firebase from 'firebase'
 
@@ -9,13 +9,17 @@ export class FirestoreComponent{
 		this.client = client; 
 		if(client === undefined) throw new ClientError('client is undefined');
 		
-		this.ref = init.ref || undefined;
+		this.ref = ''
+		this.name = ''
+		this.slug = ''
+		this.imported = false
+		this.importData = {}
 
-		this.name = init.name || undefined;
-		if(this.name !== undefined) this.name = init.name.charAt(0).toUpperCase() + init.name.substr(1)
-		this.isValidName()
+		this.setName(init.name);
+		this.setRef(init.ref)
+		this.setImported(init.imported)
+		this.setImportData(init.importData)
 
-		this.slug = Utils.slugify(this.name);
 		this.collection = undefined;
 	}
  	
@@ -24,10 +28,7 @@ export class FirestoreComponent{
 			throw new ClientError('client is undefined')
 		}
 
-		if(this.isValidName(this.name)){
-			throw new NameError('name property is not valid', this.name)
-		}
-
+		this.isValidName(this.name)
 		return true
  	}
 
@@ -35,7 +36,7 @@ export class FirestoreComponent{
 		if(!this.isValid()) throw new CreateError(this.collection + ' object is invalid:', this);
 
 		let fullProps = this.getProps(props)
-		return this.client.collection(this.collection).doc(slug).set(fullProps);
+		return this.client.collection(this.collection).doc(this.slug).set(fullProps)
 	}
 
 	delete(){
@@ -45,7 +46,10 @@ export class FirestoreComponent{
 
 	setName(name = undefined){
 		if(name === undefined || name === null) return;
-		this.name = name;
+		this.name = name.charAt(0).toUpperCase() + name.substr(1)
+		this.slug = Utils.slugify(this.name);
+
+		return this.isValidName()
 	}
 
 	getName(){
@@ -53,21 +57,40 @@ export class FirestoreComponent{
 	}
 
 	isValidName(name = this.name){
-		if(name === undefined) throw new NameError('name property is invalid:', this.name)
-		if(name === null) throw new NameError('name property is invalid:', this.name)
-		if(name.length < 3) throw new NameError('name property is too short (min 3):', this.name)
+		if(name === undefined) throw new NameError('name property is invalid:' + this.name)
+		if(name === null) throw new NameError('name property is invalid:' + this.name)
+		if(name.length < 3) throw new NameError('name property is too short (min 3):' + this.name)
 		
 		return true;
 	}
 
+	setRef(ref){
+		if(ref === undefined || ref === null) this.ref = this.getSlug();
+		this.ref = ref;
+	}
+
 	getRef(){
 		if(this.ref !== undefined) return this.ref;
-		return Utils.slugify(this.name)
+		return this.getSlug()
+	}
+
+	getSlug(){
+		return this.slug;
+	}
+
+	setImported(bool = false){
+		this.imported = bool == true ? true : false;
+	}
+
+	setImportData(d = {}){
+		this.importData.from = d.from
+		this.importData.id = d.id
+		this.importData.ref = d.ref
 	}
 
 	getProps(props = {}){
 		props.ref = this.getRef()
-		props.name = this.name
+		props.name = this.getName()
 		props.slug = this.slug
 
 		props.date_created = firebase.firestore.FieldValue.serverTimestamp()

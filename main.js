@@ -3,7 +3,9 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const os = require('os');
 const isDev = require('electron-is-dev');
+const PDFWindow = require('electron-pdf-window');
 
+const settings = require('electron-settings');
 const config = require('./config/default');
 process.env.NODE_ENV = config.env;
 
@@ -11,6 +13,7 @@ const currentOs = os.type();
 const isLinux = currentOs == 'Linux';
 
 let win = undefined;
+let testPrint = undefined;
 
 function createWindow () {
 
@@ -39,6 +42,24 @@ function createWindow () {
   })
 }
 
+function sendPrintersDefault (){
+  def = {
+    a4: {
+      type: 'A4',
+      name: undefined
+    },
+    ticket: {
+      type: 'ticket',
+      name: undefined
+    }
+  }
+
+  if(settings.has('printers.a4')) def.a4.name = settings.get('printers.a4')
+  if(settings.has('printers.ticket')) def.ticket.name = settings.get('printers.ticket')
+
+  win.webContents.send('printersDefault', def)
+}
+
 app.on('ready', function(){
   createWindow();
 });
@@ -50,6 +71,51 @@ app.on('before-quit', function(){
 /******************/
 /*      IPC       */
 /******************/
+//printers
+ipcMain.on('getPrintersDefault', (event, name) =>{
+  settings.set('printers.ticket', name)
+  sendPrintersDefault()
+});
+
+ipcMain.on('setA4Printer', (event, name) =>{
+  settings.set('printers.a4', name)
+  sendPrintersDefault()
+});
+
+ipcMain.on('setTicketPrinter', (event, name) =>{
+  settings.set('printers.ticket', name)
+  sendPrintersDefault()
+});
+
+ipcMain.on('deletePrinter', (event, type) =>{
+  settings.delete('printers.' + type.toLowerCase())
+  sendPrintersDefault()
+});
+
+ipcMain.on('testPrinter', (event, type) =>{
+  device = settings.get('printers.' + type.toLowerCase())
+
+  testPrint = new PDFWindow({
+    show: true,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  });
+
+  // load PDF
+  testPrint.loadURL(path.resolve(app.getAppPath(), 'static/print/test.pdf'));
+
+  // if pdf is loaded start printing
+  testPrint.webContents.on('dom-ready', () => {
+    let code ='var interval = window.setInterval(function() {var pdf = pdfjsWebLibs.pdfjsWebApp.PDFViewerApplication;if(!pdf.pdfViewer.pageViewsReady) return; clearInterval(interval);window.print();}, 100);'
+    testPrint.webContents.executeJavaScript(code)
+  });
+});
+
+ipcMain.on('testPdfReady', (event) =>{
+  console.error('print')
+  testPrint.webContents.print({silent: true, deviceName: settings.get('printers.a4')})
+});
 
 ipcMain.on('getPrinters', () =>{
   let printers = win.webContents.getPrinters();

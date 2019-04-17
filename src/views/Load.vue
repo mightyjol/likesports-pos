@@ -70,9 +70,9 @@ export default {
 								let data = doc.data();
 				        
 						        //add data to store
-						        this.$root.store.settings.prestashop.domain = data.domain
-						        this.$root.store.settings.prestashop.key = data.key
-						        this.$root.store.settings.prestashop.image_key = data.image_key
+						        this.$root.store.settings.prestashop.domain = data.domain || ''
+						        this.$root.store.settings.prestashop.key = data.key || ''
+						        this.$root.store.settings.prestashop.image_key = data.image_key || ''
 							}
 							if(doc.id === 'tag'){
 								let data = doc.data();
