@@ -21,7 +21,7 @@ import { Tag } from './../../core/Tag.js';
 import { Product } from './../../core/Product.js';
 
 let convert = require('xml-js');
-
+//TODO refactor this pile of shit
 export default {
 	created: function () {
 		 
