@@ -26,12 +26,9 @@ export class Tag extends FirestoreComponent{
 	}
 
 	save(){
-		let name = this.name;
-		let slug = Utils.slugify(this.name);
-
 		if(!this.isValid()) return false;
 
-		return this.client.collection(this.collection).doc(slug).set({
+		return this.client.collection(this.collection).doc(this.set).set({
 			ref: slug,
 			name: name,
 			priority: 0
@@ -48,6 +45,11 @@ export class Tag extends FirestoreComponent{
 
 	getSet(){
 		return this.set;
+	}
+
+	checkSet(set = this.set){
+		if(set === undefined) return false
+		return this.client.collection(this.collection).doc(set).get();
 	}
 
 	getProps(props = {}){

@@ -399,7 +399,7 @@ export default {
 				this.loadProducts();
 			}
 		},
-		cleanAndImport: function(){
+		cleanAndImport: async function(){
 			console.error('--------------------')
 			console.error(this.prestashopProducts)
 			console.error(this.prestashopTags)
@@ -408,9 +408,36 @@ export default {
 			this.loadingText = "cleaning dataset"
 			this.loadingStatus = "text"
 
-			//adding tags
+			//adding tag sets
+			let newSets = []
+			for(let i in this.prestashopTags){
+				let setName = i
+				let ref = this.$root.store.user.client.collection('tag').doc(setName)
+				let tags = {}
 
+				for(let t in this.prestashopTags[i]){
+					tags[t] = true
+				}
 
+				await ref.get()
+				.then(doc => {
+					console.error(doc,doc.exists)
+					if(!doc.exists){
+						newSets.push(ref.set(tags))
+					}
+				})
+				.catch(e => {
+					console.error(e)
+				})
+			}
+
+			await Promise.all(newSets)
+			.then(() => {})
+			.catch(e => {
+				console.error(e)
+			})
+
+			
 			//adding products
 			let productBatch = this.$db.batch()
 			
@@ -435,6 +462,7 @@ export default {
 				)
 			}
 
+			/*
 			productBatch.commit()
 			.then(() =>{
 				console.error('products saved')
@@ -444,6 +472,7 @@ export default {
 				console.error(e)
 				this.isLoading = false;
 			})
+			*/
 		}
 	},
 	computed: {
