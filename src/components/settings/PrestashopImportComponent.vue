@@ -67,7 +67,7 @@ export default {
 					showClose: true
 				})
 			});
-			
+
 
 			//load categories
 			this.$http.get(this.prestashopBuildBaseUrl() + '/categories?display=full' + '&ws_key=' + 
@@ -108,6 +108,7 @@ export default {
 				})
 			});
 
+
 			//load product combination values
 			this.$http.get(this.prestashopBuildBaseUrl() + '/product_option_values?display=full' + '&ws_key=' + 
 				this.$root.store.settings.prestashop.key)
@@ -143,6 +144,7 @@ export default {
 				})
 			});
 			
+
 			//load features - step 1
 			this.$http.get(this.prestashopBuildBaseUrl() + '/product_features?display=full' + '&ws_key=' + 
 				this.$root.store.settings.prestashop.key)
@@ -423,7 +425,7 @@ export default {
 
 				await ref.get()
 				.then(doc => {
-					console.error(doc,doc.exists)
+					//console.error(doc,doc.exists)
 					if(!doc.exists){
 						newSets.push(ref.set(tags))
 					}
@@ -438,15 +440,15 @@ export default {
 			.catch(e => {
 				console.error(e)
 			})
-
 			
 			//adding products
 			let productBatch = this.$db.batch()
 			
 			for(let i in this.prestashopProducts){
-				console.error(this.prestashopProducts[i])
 				let newProduct = new Product(this.$root.store.user.client, this.prestashopProducts[i])
 				newProduct.addToInventory('prestashop')
+
+
 
 				let props = newProduct.getProps();
 				let quantities = this.prestashopProducts[i].quantity

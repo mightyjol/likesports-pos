@@ -54,7 +54,7 @@ export default {
 				console.log(this.$root.store)
 				 
 				//this.$router.replace({ name:'productDetail', params:{ ref:'new' } });
-				this.$router.replace({ name:'prestashop' });
+				this.$router.replace({ name:'home' });
 			}
 		},
 		loadSettings: function(){

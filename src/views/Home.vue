@@ -48,7 +48,7 @@ export default {
 	},
 	methods: {
 		launchPOS: function(){
-			console.log("launch pos")
+			ipc.send('launchPOS');
 		},
 		commandDetail: function(){
 			console.log("start command process")

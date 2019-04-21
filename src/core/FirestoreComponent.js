@@ -35,8 +35,19 @@ export class FirestoreComponent{
  	create(props){
 		if(!this.isValid()) throw new CreateError(this.collection + ' object is invalid:', this);
 
-		let fullProps = this.getProps(props)
-		return this.client.collection(this.collection).doc(this.slug).set(fullProps)
+		let fullProps = this.getProps(props);
+		let promise =  this.client.collection(this.collection).add(fullProps);
+		
+		promise
+		.then(doc => {
+			this.setRef(doc.id)
+		})
+		.catch(e => {
+			//TODO find a way to resolve this gracefully
+			console.error(e)
+		})
+
+		return promise;
 	}
 
 	delete(){
@@ -65,13 +76,12 @@ export class FirestoreComponent{
 	}
 
 	setRef(ref){
-		if(ref === undefined || ref === null) this.ref = this.getSlug();
+		if(ref === undefined || ref === null) throw new RefError('ref cannot be undefined|null: ' + this.ref);
 		this.ref = ref;
 	}
 
 	getRef(){
-		if(this.ref !== undefined) return this.ref;
-		return this.getSlug()
+		return this.ref;
 	}
 
 	getSlug(){

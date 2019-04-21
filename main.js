@@ -13,6 +13,8 @@ const currentOs = os.type();
 const isLinux = currentOs == 'Linux';
 
 let win = undefined;
+let POS = undefined;
+
 let testPrint = undefined;
 
 function createWindow () {
@@ -71,6 +73,35 @@ app.on('before-quit', function(){
 /******************/
 /*      IPC       */
 /******************/
+
+//windows
+ipcMain.on('launchPOS', (e, name) => {
+  console.log('launching pos window');
+  POS = new BrowserWindow({ 
+    width: 1024, 
+    height: 800,
+    minWidth: 320,
+    webPreferences: {
+      nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.js')
+    }
+  });
+
+  win.setMenuBarVisibility(false);
+
+  win.loadFile('./dist/index.html');
+  if(isDev) win.webContents.openDevTools();
+
+  win.webContents.on('crashed', (e) => {
+    app.relaunch()
+    win.webContents.send('isQuitting', true);
+  });
+  
+  win.on('closed', () => {
+    win = null;
+  })
+});
+
 //printers
 ipcMain.on('getPrintersDefault', (event, name) =>{
   settings.set('printers.ticket', name)
