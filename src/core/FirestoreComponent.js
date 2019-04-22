@@ -9,7 +9,6 @@ export class FirestoreComponent{
 		this.client = client; 
 		if(client === undefined) throw new ClientError('client is undefined');
 		
-		this.ref = ''
 		this.name = ''
 		this.slug = ''
 		this.imported = false
@@ -75,7 +74,7 @@ export class FirestoreComponent{
 		return true;
 	}
 
-	setRef(ref){
+	setRef(ref = ''){
 		if(ref === undefined || ref === null) throw new RefError('ref cannot be undefined|null: ' + this.ref);
 		this.ref = ref;
 	}

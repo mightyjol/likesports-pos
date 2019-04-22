@@ -23,6 +23,7 @@ import { Product } from './../../core/Product.js';
 let convert = require('xml-js');
 
 //TODO refactor this pile of shit
+//TODO move all the import-heay stuff to the server
 
 export default {
 	created: function () {
@@ -345,17 +346,16 @@ export default {
 					let tags = {}
 					let man_id = p.id_manufacturer._cdata
 					if(man_id != "0"){
-						tags[this.idToName['Brands'][man_id]] = true
+						tags['brands'] = this.idToName['Brands'][man_id]
 					}
 
 					if(!Array.isArray(p.associations.categories.category)){
 						let cat_name = this.idToName['Categories'][p.associations.categories.category.id._cdata]
-						tags[cat_name] = true
 					}
 					else{
 						for(let cat of p.associations.categories.category){
 							let cat_name = this.idToName['Categories'][cat.id._cdata]
-							tags[cat_name] = true
+							tags['categories'] = cat_name
 						}
 					}
 				 	props.tags = tags
@@ -442,31 +442,36 @@ export default {
 			})
 			
 			//adding products
+			//TODO match by slug first -> if no match -> add
 			let productBatch = this.$db.batch()
 			
 			for(let i in this.prestashopProducts){
-				let newProduct = new Product(this.$root.store.user.client, this.prestashopProducts[i])
+				let product = this.prestashopProducts[i]
+				
+				let newProduct = new Product(this.$root.store.user.client, product)
 				newProduct.addToInventory('prestashop')
 
+				for(let tagSet in product.tags){
+					console.error(tagSet)
+				}
 
-
+				let newRef = this.$root.store.user.client.collection('product').doc();
 				let props = newProduct.getProps();
 				let quantities = this.prestashopProducts[i].quantity
 
 				productBatch.set(
-					this.$root.store.user.client.collection('product').doc(newProduct.getRef()), 
+					newRef, 
 					props
 					/*, {merge:true}*/
 				)
 
 				productBatch.set(
-					this.$root.store.user.client.collection('product').doc(newProduct.getRef()).collection('inventory').doc('prestashop'), 
+					newRef.collection('inventory').doc('prestashop'), 
 					quantities
-					/*, {merge:true}*/
 				)
 			}
 
-			/*
+			 
 			productBatch.commit()
 			.then(() =>{
 				console.error('products saved')
@@ -476,7 +481,7 @@ export default {
 				console.error(e)
 				this.isLoading = false;
 			})
-			*/
+			 
 		}
 	},
 	computed: {
