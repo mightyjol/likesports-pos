@@ -346,7 +346,7 @@ export default {
 					let tags = {}
 					let man_id = p.id_manufacturer._cdata
 					if(man_id != "0"){
-						tags['brands'] = this.idToName['Brands'][man_id]
+						tags['brand'] = this.idToName['Brands'][man_id]
 					}
 
 					if(!Array.isArray(p.associations.categories.category)){
@@ -457,6 +457,8 @@ export default {
 
 				let newRef = this.$root.store.user.client.collection('product').doc();
 				let props = newProduct.getProps();
+
+				console.error(newRef)
 				let quantities = this.prestashopProducts[i].quantity
 
 				productBatch.set(
