@@ -1,7 +1,15 @@
 const { app, BrowserWindow, shell, ipcMain, Menu, TouchBar } = require('electron');
 const { TouchBarButton, TouchBarLabel, TouchBarSpacer } = TouchBar;
 
+const basepath = process.env['APP_PATH'] = app.getAppPath();
+
 const path = require('path');
+const dev = process.env.NODE_ENV === 'development';
+
+if(!dev){
+	let p = path.resolve(__dirname, '../__sapper__/build/index.js');
+	require(p);
+}
 
 let mainWindow;
 
@@ -13,14 +21,15 @@ createWindow = () => {
 		titleBarStyle: 'hiddenInset',
 		webPreferences: {
 			nodeIntegration: false,
-			preload: __dirname + '/preload.js',
+			//preload: __dirname + '/preload.js',
 		},
 		height: 860,
 		width: 1280,
 	});
 
 	mainWindow.loadURL('http://localhost:3000');
-
+	mainWindow.webContents.openDevTools();
+	
 	mainWindow.once('ready-to-show', () => {
 		mainWindow.show();
 

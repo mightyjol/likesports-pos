@@ -70,7 +70,7 @@ export default {
 			require('module').builtinModules || Object.keys(process.binding('natives'))
 		),
 	},
-
+/*
 	serviceworker: {
 		input: config.serviceworker.input(),
 		output: config.serviceworker.output(),
@@ -84,4 +84,6 @@ export default {
 			!dev && terser()
 		]
 	}
+
+*/
 };

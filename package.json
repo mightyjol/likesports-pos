@@ -2,16 +2,18 @@
   "name": "TODO",
   "description": "TODO",
   "version": "0.0.1",
+  "license": "MIT",
   "main": "src/electron.js",
   "scripts": {
-    "dev": "sapper dev",
+    "dev": "concurrently \"sapper dev\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",
     "build": "sapper build --legacy",
     "export": "sapper export --legacy",
-    "start": "concurrently \"cross-env BROWSER=none node __sapper__/build\" \"wait-on http://localhost:3000 && electron .\"",
+    "start": "concurrently \"cross-env BROWSER=none NODE_ENV=development node __sapper__/build\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",
+    "startprod": "electron .",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "test": "run-p --race dev cy:run",
-    "dist": "npx build --x64 --macos --c.extraMetadata.main=src/electron.js -p always"
+    "package": "electron-packager . pos --overwrite --platform=win32 --arch=ia32 --icon=static/icons/win/icon.ico --prune=true --out=dist --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"POS application\""
   },
   "dependencies": {
     "compression": "^1.7.1",
