@@ -1,5 +1,7 @@
 const { app, BrowserWindow, shell, ipcMain, Menu, autoUpdater } = require('electron');
 
+require('./updater.js'); 
+
 const basepath = process.env['APP_PATH'] = app.getAppPath();
 
 const path = require('path');
@@ -9,12 +11,6 @@ if(!dev){
 	let p = path.resolve(__dirname, '../__sapper__/build/index.js');
 	require(p);
 }
-
-const config = require('./config/dev.json');
-const server = config.update.server;
-const feed = `${server}/update/${process.platform}/${app.getVersion()}`;
-
-autoUpdater.setFeedURL(feed);
 
 let mainWindow;
 
