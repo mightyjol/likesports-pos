@@ -1,5 +1,4 @@
-const { app, BrowserWindow, shell, ipcMain, Menu, TouchBar } = require('electron');
-const { TouchBarButton, TouchBarLabel, TouchBarSpacer } = TouchBar;
+const { app, BrowserWindow, shell, ipcMain, Menu, autoUpdater } = require('electron');
 
 const basepath = process.env['APP_PATH'] = app.getAppPath();
 
@@ -11,6 +10,12 @@ if(!dev){
 	require(p);
 }
 
+const config = require('./config/dev.json');
+const server = config.update.server;
+const feed = `${server}/update/${process.platform}/${app.getVersion()}`;
+
+autoUpdater.setFeedURL(feed);
+
 let mainWindow;
 
 createWindow = () => {
@@ -21,7 +26,7 @@ createWindow = () => {
 		titleBarStyle: 'hiddenInset',
 		webPreferences: {
 			nodeIntegration: false,
-			//preload: __dirname + '/preload.js',
+			preload: path.join(__dirname, '/preload.js'),
 		},
 		height: 860,
 		width: 1280,
@@ -55,4 +60,37 @@ app.on('activate', () => {
 
 ipcMain.on('load-page', (event, arg) => {
 	mainWindow.loadURL(arg);
+});
+
+/*
+	AUTO UPDATER
+*/
+
+ipcMain.on('check-for-update', (event, err) => {
+	if(dev){
+		mainWindow.webContents.send('update-status', {
+			status: false,
+			msg: 'This is a dev build',
+			error: undefined
+		});
+	}
+	else{
+		autoUpdater.checkForUpdates();
+	}
+});
+
+autoUpdater.on('update-available', (event, err) => {
+	mainWindow.webContents.send('update-status', {
+		status: true,
+		msg: 'Update is available',
+		error: err
+	});
+});
+
+autoUpdater.on('update-not-available', (event, err) => {
+	mainWindow.webContents.send('update-status', {
+		status: false,
+		msg: 'No update has been found',
+		error: err
+	});
 });

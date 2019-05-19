@@ -1,3 +1,17 @@
+<script>
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		ipc.on('update-status', (e, msg) => {
+			console.error(msg)
+		});
+	});
+	
+	function checkForUpdate(){
+		ipc.send('check-for-update'); 
+	}
+</script>
+
 <style>
 	h1, figure, p {
 		text-align: center;
@@ -33,7 +47,7 @@
 </style>
 
 <svelte:head>
-	<title>Sapper project template</title>
+	<title>POS - Login</title>
 </svelte:head>
 
 <h1>Great success!</h1>
@@ -44,3 +58,4 @@
 </figure>
 
 <p><strong>Try editing this file test live reloading.</strong></p>
+<button on:click="{checkForUpdate}">check for update</button>
