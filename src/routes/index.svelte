@@ -57,5 +57,5 @@
 	<figcaption>HIGH FIVE!</figcaption>
 </figure>
 
-<p><strong>Try editing this file test live reloading.</strong></p>
+<p><strong>This is an updated app</strong></p>
 <button on:click="{checkForUpdate}">check for update</button>

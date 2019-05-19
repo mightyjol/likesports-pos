@@ -8,14 +8,15 @@
   "scripts": {
     "dev": "concurrently \"cross-env NODE_ENV=development sapper dev\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",
     "build": "sapper build",
+    "releasewin": "cmd /c release.sh",
     "export": "sapper export --legacy",
     "start": "concurrently \"cross-env BROWSER=none NODE_ENV=development node __sapper__/build\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",
     "startprod": "electron .",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "test": "run-p --race dev cy:run",
-    "package": "yarn build && electron-packager . pos --overwrite --platform=win32 --arch=x64 --icon=static/icons/win/icon.ico --prune=true --out=dist --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"POS application\"",
-    "setup": "electron-installer-windows --src dist/pos-win32-x64/ --dest dist/installers/"
+    "package": "yarn build && electron-packager . pos --overwrite --all --icon=static/icons/win/icon.ico --prune=true --out=dist --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"POS application\"",
+    "setup": "electron-installer-windows --src dist/pos-win32-ia32/ --dest dist/installers/"
   },
   "dependencies": {
     "compression": "^1.7.1",

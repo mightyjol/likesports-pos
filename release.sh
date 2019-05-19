@@ -1,5 +1,8 @@
 #works to ssh & http link
 
+version='0.0.2' 
+description='test release'
+
 token=$(git config --global github.token)
 repo_full_name=$(git config --get remote.origin.url)
 url=$repo_full_name
@@ -17,8 +20,8 @@ generate_post_data()
 {
   cat <<EOF
 {
-  "tag_name": "$version",
-  "target_commitish": "$branch",
+  "tag_name": "v$version",
+  "target_commitish": "master",
   "name": "$version",
   "body": "$text",
   "draft": false,
@@ -28,6 +31,6 @@ EOF
 }
 
 echo "https://api.github.com/repos/$user/$repo/releases?access_token=$token"
-echo "Create release $version for repo: $repo_full_name branch: $branch"
 
-curl --data "$(generate_post_data)" "https://api.github.com/repos/$repo_full_name/releases?access_token=$token"
+curl --data "$(generate_post_data)" "https://api.github.com/repos/$user/$repo/releases?access_token=$token"
+read -p "Press enter to continue"
