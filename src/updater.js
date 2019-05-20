@@ -78,9 +78,10 @@ const feed = `${server}/update/${process.platform}/${app.getVersion()}`;
 autoUpdater.setFeedURL(feed);
 
 autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
-	mainWindow.webContents.send('update-status', {
-		status: true,
-		msg: 'Update has been downloaded',
-		error: err
-	});
+	console.error('update downloaded');
+})
+
+autoUpdater.on('error', (error) => {
+	console.error('error');
+	console.error(error);
 })
