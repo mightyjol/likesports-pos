@@ -22,7 +22,7 @@ server.use((req, res, next) => {
 		contentSecurityPolicy: {
 			directives: {
 				scriptSrc: [
-					"'self' blob: 'sha256-TF7U84tA0VzyQA3Efu0uBtYe16CfzpO1cMqhN/qKFJ8='",
+					"'self' blob:",
 					(req, res) => `'nonce-${res.locals.nonce}'`
 				]
 			}
