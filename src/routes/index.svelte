@@ -57,5 +57,5 @@
 	<figcaption>HIGH FIVE!</figcaption>
 </figure>
 
-<p><strong>This is an updated app v0.0.6</strong></p>
+<p><strong>This is an updated app v0.0.7</strong></p>
 <button on:click="{checkForUpdate}">check for update</button>
