@@ -1,5 +1,14 @@
 const { app, BrowserWindow, shell, ipcMain, Menu, autoUpdater } = require('electron');
 
+let mainWindow;
+
+process.on('uncaughtException', function (error) {
+    // Handle the error
+    mainWindow.webContents.send('error', {
+		error: error
+	});
+});
+
 require('./updater.js'); 
 
 const basepath = process.env['APP_PATH'] = app.getAppPath();
@@ -11,8 +20,6 @@ if(!dev){
 	let p = path.resolve(__dirname, '../__sapper__/build/index.js');
 	require(p);
 }
-
-let mainWindow;
 
 createWindow = () => {
 	mainWindow = new BrowserWindow({
