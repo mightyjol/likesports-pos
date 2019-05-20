@@ -11,8 +11,10 @@ const dev = NODE_ENV === 'development';
 
 const staticDir = path.resolve(__dirname, '../../../static');
 
-polka() // You can also use Express
-	.use((req, res, next) => {
+ // You can also use Express
+let server = polka();
+
+server.use((req, res, next) => {
 		res.locals = { nonce: uuidv4() }
 		next();
 	})
@@ -30,7 +32,16 @@ polka() // You can also use Express
 		compression({ threshold: 0 }),
 		sirv(staticDir, { dev }),
 		sapper.middleware()
-	)
-	.listen(PORT, err => {
+	);
+
+try{
+	server.listen(PORT, err => {
 		if (err) console.log('error', err);
 	});
+}
+catch(e){
+	if (err.code === 'EADDRINUSE') {
+	    // port is currently in use
+	    console.error('port already in use');
+	}
+}
