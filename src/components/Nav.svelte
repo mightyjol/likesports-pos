@@ -1,60 +1,33 @@
 <script>
 	export let segment;
+
+	function openWindow(name){
+		ipc.send('onpenWindow', {
+			name: name
+		})
+	}
+ 
 </script>
 
 <style>
-	nav {
-		border-bottom: 1px solid rgba(255,62,0,0.1);
-		font-weight: 300;
-		padding: 0 1em;
-	}
-
-	ul {
-		margin: 0;
-		padding: 0;
-	}
-
-	/* clearfix */
-	ul::after {
-		content: '';
-		display: block;
-		clear: both;
-	}
-
-	li {
-		display: block;
-		float: left;
-	}
-
-	.selected {
-		position: relative;
+	li{
 		display: inline-block;
 	}
-
-	.selected::after {
-		position: absolute;
-		content: '';
-		width: calc(100% - 1em);
-		height: 2px;
-		background-color: rgb(255,62,0);
+	a{
 		display: block;
-		bottom: -1px;
+		padding: 10px 20px;
 	}
-
-	a {
-		text-decoration: none;
-		padding: 1em 0.5em;
-		display: block;
+	a:hover{
+		background-color: #DDD;
 	}
 </style>
 
 <nav>
 	<ul>
-		<li><a class='{segment === undefined ? "selected" : ""}' href='.'>home</a></li>
-		<li><a class='{segment === "about" ? "selected" : ""}' href='about'>about</a></li>
-
-		<!-- for the blog link, we're using rel=prefetch so that Sapper prefetches
-		     the blog data when we hover over the link or tap it on a touchscreen -->
-		<li><a rel=prefetch class='{segment === "blog" ? "selected" : ""}' href='blog'>blog</a></li>
+		<li><a href='/shop/'>Home</a></li>
+		<li><a href='/shop/orders/'>Orders</a></li>
+		<li><a href='/shop/products/'>Products</a></li>
+		<li><a href='/shop/inventories/'>Inventories</a></li>
+		<li><a href='/shop/settings/'>Settings</a></li>
 	</ul>
 </nav>

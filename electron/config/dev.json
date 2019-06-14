@@ -1,0 +1,9 @@
+{
+	"update": {
+		"server": "https://pos-update-server.insomniak.now.sh"
+	},
+	"server": {
+		"dev" : "http://localhost:3000/",
+		"prod": "https://pos-v2-d0e73.web.app/"
+	}
+}

@@ -1,61 +1,42 @@
-<script>
-	import { onMount } from 'svelte';
-
-	onMount(() => {
-		ipc.on('update-status', (e, msg) => {
-			console.error(msg)
-		});
-	});
-	
-	function checkForUpdate(){
-		ipc.send('check-for-update'); 
+<script context="module">
+	export function preload(page, session){
+		if(!!session.user) this.redirect(302, '/shop/settings/printers') 
 	}
 </script>
 
-<style>
-	h1, figure, p {
-		text-align: center;
-		margin: 0 auto;
+<script>
+	import { onMount } from 'svelte';
+	import { stores, goto } from '@sapper/app'
+
+	let { session } = stores()
+
+	let email = 'admin@testing.com'
+	let password = 'testing'
+
+	function login(){
+		let unsub = session.subscribe(s => {
+			if(!!s.user) goto('shop/settings/printers')
+		})
+
+		$session.auth.signInWithEmailAndPassword(email, password)
+		.then(u => {
+			unsub()
+		})
+		.catch(e => {
+			console.error(e)
+		})
 	}
 
-	h1 {
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
+	function checkForUpdate(){
+		ipc.send('check-for-update'); 
 	}
 
-	figure {
-		margin: 0 0 1em 0;
-	}
+</script>
 
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
-	}
-
-	p {
-		margin: 1em auto;
-	}
-
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
-	}
-</style>
-
-<svelte:head>
-	<title>POS - Login</title>
-</svelte:head>
-
-<h1>Great success!</h1>
-
-<figure>
-	<img alt='Borat' src='great-success.png'>
-	<figcaption>HIGH FIVE!</figcaption>
-</figure>
-
-<p><strong>UPDATED ---- v0.0.10</strong></p>
-<button on:click="{checkForUpdate}">check for update</button>
+<h1>Login</h1>
+<form>
+	<input bind:value="{email}" type="email">
+	<input bind:value="{password}" type="password">
+	<button type="button" on:click="{login}">Login</button>
+</form>
+<button on:click="{checkForUpdate}">Check for updates</button>

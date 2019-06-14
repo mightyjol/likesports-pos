@@ -3,7 +3,7 @@
 this repo is a tweak of 
 https://github.com/matt3224/electrosapp.git
 
-In order for this electron app to be functionnal when packaged (windows), i had to mokey-patch this file from sapper:
+In order for this electron app to be functionnal when packaged (windows), i had to monkey-patch this file from sapper:
 node_modules/sapper/runtime/server.mjs
 
 ```js
