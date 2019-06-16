@@ -2,11 +2,10 @@
 	//TODO check here if online or not
 	import { stores, goto, prefetchRoutes } from '@sapper/app'
 	import { onMount } from 'svelte'
-	
-	export let segment
-	
+	import { local as settingsLocal } from '../stores/settings.js'
+	import initStores from '../stores/init.js'
+
 	let { session } = stores()
-	let firebase = undefined
 
 	//show loading before user state is set
 	let isLoading = true
@@ -21,32 +20,57 @@
 
 	//checks if user is logged in already
 	onMount(async () => {
+		/* UPDATE CHECKING */
+		ipc.on('update-status', (e, msg) => {
+			console.error(msg)
+		});
+
+		/* SETTINGS LOCAL */
+		ipc.on('settings', (event, current) => {
+			console.log('received settings', current)
+			settingsLocal.update(s => current)
+		})
+
+		//init local settings
+		ipc.send('get-settings')
+
 		/* Load all other routes */
-		/*
 		prefetchRoutes().then(() => {
 			isFetching = false
 			isFinished()
 		});
-		*/
-		isFetching = false
 
 		/* FIREBASE LAZY LOADING - this is the best solution i found to allow ssr with firebase*/
 		//keep in mind that this adds +-500kb to the iitial chunk
 		let lazy = await import('../firebase/app.js')
-		firebase = lazy.default
+		let firebase = lazy.default
+		let db = firebase.firestore()
 
-		session.update(s => {
-			s.auth = firebase.auth()
-			s.firestore = firebase.firestore()
-			return s
+		session.set({
+			auth: firebase.auth(),
+			firestore: db,
+			messaging: firebase.messaging()
 		})
 
 		/* USER LOG STATE */
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
-				session.update(s => {
-					s.user = user
-					return s
+			 	db.collection('users').doc(user.uid).get()
+			 	.then(async doc => {
+			 		let userData = doc.data()
+					session.update(s => {
+						s.user = userData
+						s.firestore = firebase.firestore().collection('clients').doc(userData.client_id)
+						return s
+					})
+
+					await initStores()
+					
+					isInitializing = false
+					isFinished()
+				})
+				.catch(e => {
+					console.error(e)
 				})
 			} else {
 				session
@@ -57,14 +81,6 @@
 			 
 				goto('/')
 			}
-			
-			isInitializing = false
-			isFinished()
-		});
-
-		/* UPDATE CHECKING */
-		ipc.on('update-status', (e, msg) => {
-			console.error(msg)
 		});
 	})
 </script>

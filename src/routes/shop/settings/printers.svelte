@@ -1,10 +1,14 @@
 <script>
 	import { onMount } from 'svelte'
+	import { local as settings } from '../../../stores/settings.js'
 
 	let modalActive = false
 	let currentSelect = undefined
 	let printers = []
-	let settings = {}
+
+	settings.subscribe(s => {
+		modalActive = false
+	})
 
 	onMount(() => {
 		ipc.on('printers', (event, list) => {
@@ -12,14 +16,6 @@
 			printers = list
 			modalActive = true
 		})
-
-		ipc.on('settings', (event, current) => {
-			console.log('received settings', current)
-			settings = current.printers
-			modalActive = false
-		})
-
-		ipc.send('get-settings')
 	})
 
 	function getPrinters(type){
@@ -45,6 +41,8 @@
 	function toggleModal(){
 		modalActive = !modalActive
 	}
+
+	$:console.error($settings)
 </script>
 
 <div class:is-active="{modalActive}" class="modal">
@@ -66,8 +64,8 @@
 <h1>Printers</h1>
 <div>
 	<p>A4</p>
-	{#if settings.a4 }
-		<p>current: {settings.a4.name}</p>
+	{#if $settings.printers.a4 }
+		<p>current: {$settings.printers.a4.name}</p>
 		<button on:click="{() => {printTest('a4')}}">
 			print test page
 		</button>
@@ -77,8 +75,8 @@
 
 <div>
 	<p>ticket printer</p>
-	{#if settings.ticket}
-		<p>current: {settings.ticket.name}</p>
+	{#if $settings.printers.ticket}
+		<p>current: {$settings.printers.ticket.name}</p>
 		<button on:click="{() => {printTest('ticket')}}">
 			print test page
 		</button>

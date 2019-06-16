@@ -744,7 +744,7 @@
   resolved "https://registry.yarnpkg.com/@firebase/messaging-types/-/messaging-types-0.3.0.tgz#915eca1a6c1e0ceacf82e5086724cf054976b997"
   integrity sha512-xCFMPy4C+WXFcshTnQEyddmqM6ZkzpTeJq7RUhrAvUnjlfFzOB92HOfKtjT6IpNk5W+jNbTTrqgrgReuPXsM2A==
 
-"@firebase/messaging@0.4.2":
+"@firebase/messaging@0.4.2", "@firebase/messaging@^0.4.2":
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@firebase/messaging/-/messaging-0.4.2.tgz#d6556b509de987d76c4ce85be8fcac539100bf30"
   integrity sha512-h8p/5GSFooTLwlOUCL0XeGHnC97GIisvxSewMgBWpYYY6dJ+F6OKR4tPHnnu6mK6BDyHoJv8mOYl9PsP6ZpFpg==

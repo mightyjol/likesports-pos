@@ -5,6 +5,7 @@
 	"short_name": "TODO",
 	"display": "minimal-ui",
 	"start_url": "/",
+	"gcm_sender_id": "103953800507",
 	"icons": [
 		{
 			"src": "logo-192.png",

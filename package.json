@@ -21,6 +21,7 @@
     "serve": "firebase serve --only functions"
   },
   "dependencies": {
+    "@firebase/messaging": "^0.4.2",
     "body-parser": "^1.19.0",
     "electron-settings": "^3.2.0",
     "electron-squirrel-startup": "^1.0.0",

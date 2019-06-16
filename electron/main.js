@@ -131,6 +131,36 @@ ipcMain.on('print', (event, args) => {
 */
 ipcMain.on('get-settings', (event, args) => {
 	let current = settings.getAll()
+
+	if(!current.inventories) {
+		settings.set('inventories', [])
+		current.inventories = []
+	}
+
+	mainWindow.webContents.send('settings', current)
+})
+
+
+ipcMain.on('physical-inventory-add', (event, args) => {
+	let temp = settings.get('inventories')
+	if(temp.indexOf(args.id) == -1){
+		temp.push(args.id)
+		settings.set('inventories', temp)
+	}
+	
+	let current = settings.getAll()
+	mainWindow.webContents.send('settings', current)
+})
+
+
+ipcMain.on('physical-inventory-remove', (event, args) => {
+	let temp = settings.get('inventories')
+	if(temp.indexOf(args.id) !== -1){
+		temp.splice(temp.indexOf(args.id), 1)
+		settings.set('inventories', temp)
+	}
+	
+	let current = settings.getAll()
 	mainWindow.webContents.send('settings', current)
 })
 
