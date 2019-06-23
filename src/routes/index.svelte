@@ -1,7 +1,11 @@
 <script context="module">
 	export function preload(page, session){
-		let skipper = process.dev ? '/shop/inventories' : '/shop'
+		let skipper = process.dev ? '/shop/products/X12c7ATeIId1M1A6EvQ4/codes' : '/shop'
 		if(!!session.user) return this.redirect(302, skipper) 
+
+		return {
+			skipper: skipper
+		}
 	}
 </script>
 
@@ -12,7 +16,7 @@
 	let { session } = stores()
 	
 	//skips to specific url for dev purposes	
-	let skipper = process.dev ? '/shop/inventories' : '/shop'
+	export let skipper 
 	
 	let email = 'admin@testing.com'
 	let password = 'testing'

@@ -10,24 +10,34 @@ const url = dev ? config.server.dev : config.server.prod;
 
 require('./updater.js');  
 
-let mainWindow;
+let mainWindow
+let productWindows = []
 
+createWindow = (preload = true) => {
+	let webPreferences = {
+		nodeIntegration: false
+	}
 
-createWindow = () => {
-	mainWindow = new BrowserWindow({
+	if(preload) webPreferences.preload = path.join(__dirname, '/preload.js')
+
+	let newWindow = new BrowserWindow({
 		backgroundColor: '#FFFFFF',
 		minWidth: 375,
 		show: false,
 		titleBarStyle: 'hiddenInset',
-		webPreferences: {
-			nodeIntegration: false,
-			preload: path.join(__dirname, '/preload.js'),
-		},
+		webPreferences: webPreferences,
 		height: 860,
 		width: 1280,
 	});
 
-	mainWindow.loadURL(url);
+	return newWindow
+}
+
+createMainWindow = () => {
+	mainWindow = createWindow()
+	mainWindow.loadURL(url)
+
+
 	if(dev) mainWindow.webContents.openDevTools();
 	
 	mainWindow.once('ready-to-show', () => {
@@ -41,7 +51,7 @@ createWindow = () => {
 };
 
 app.on('ready', () => {
-	createWindow();
+	createMainWindow();
 });
 
 app.on('window-all-closed', () => {
@@ -164,3 +174,21 @@ ipcMain.on('physical-inventory-remove', (event, args) => {
 	mainWindow.webContents.send('settings', current)
 })
 
+/*
+	WINDOWS
+*/
+
+ipcMain.on('window-product', (event, args) => {
+	let id = args.id
+	let productUrl = url + 'shop/products/' + id
+
+	let newProductWindow = createWindow()
+	newProductWindow.loadURL(productUrl)
+
+	productWindows.push(newProductWindow)
+	
+	if(dev) newProductWindow.webContents.openDevTools();
+	newProductWindow.once('ready-to-show', () => {
+		newProductWindow.show();
+	});
+})

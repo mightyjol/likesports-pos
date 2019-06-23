@@ -44,12 +44,15 @@
 		//keep in mind that this adds +-500kb to the iitial chunk
 		let lazy = await import('../firebase/app.js')
 		let firebase = lazy.default
+		
 		let db = firebase.firestore()
+		let messaging = firebase.messaging()
 
 		session.set({
 			auth: firebase.auth(),
 			firestore: db,
-			messaging: firebase.messaging()
+			firebase: firebase,
+			messaging: messaging
 		})
 
 		/* USER LOG STATE */
@@ -65,7 +68,7 @@
 					})
 
 					await initStores()
-					
+
 					isInitializing = false
 					isFinished()
 				})
@@ -82,6 +85,14 @@
 				goto('/')
 			}
 		});
+
+		//TODO implement this for multiple registers
+		/* HANDLE MESSAGING */
+		messaging.onMessage((payload) => {
+			console.log('Message received. ', payload);
+			// ...
+		});
+
 	})
 </script>
 
