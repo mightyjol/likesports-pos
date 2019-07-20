@@ -60,7 +60,8 @@ async function init(){
 		query.forEach(doc => {
 			let data = doc.data()
 			data.id = doc.id
-
+			
+			if(!data.images) data.images = []
 			tempProducts.push(data)
 		})
 

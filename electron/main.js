@@ -11,7 +11,11 @@ const url = dev ? config.server.dev : config.server.prod;
 require('./updater.js');  
 
 let mainWindow
-let productWindows = []
+let windows = {
+	pos: undefined,
+	stats: undefined,
+	compta: undefined
+}
 
 createWindow = (preload = true) => {
 	let webPreferences = {
@@ -24,7 +28,7 @@ createWindow = (preload = true) => {
 		backgroundColor: '#FFFFFF',
 		minWidth: 375,
 		show: false,
-		titleBarStyle: 'hiddenInset',
+		frame: true,
 		webPreferences: webPreferences,
 		height: 860,
 		width: 1280,
@@ -148,6 +152,9 @@ ipcMain.on('get-settings', (event, args) => {
 	}
 
 	mainWindow.webContents.send('settings', current)
+	for(let i in windows){
+		if(windows[i] !== undefined) windows[i].webContents.send('settings', current)
+	}
 })
 
 
@@ -178,17 +185,17 @@ ipcMain.on('physical-inventory-remove', (event, args) => {
 	WINDOWS
 */
 
-ipcMain.on('window-product', (event, args) => {
-	let id = args.id
-	let productUrl = url + 'shop/products/' + id
+ipcMain.on('open-window', (event, args) => {
 
-	let newProductWindow = createWindow()
-	newProductWindow.loadURL(productUrl)
+	let name = args.name
 
-	productWindows.push(newProductWindow)
+	let newWindow = createWindow()
+	newWindow.loadURL(url + 'local/' + name)
+
+	windows[name] = newWindow
 	
-	if(dev) newProductWindow.webContents.openDevTools();
-	newProductWindow.once('ready-to-show', () => {
-		newProductWindow.show();
+	if(dev) newWindow.webContents.openDevTools();
+	newWindow.once('ready-to-show', () => {
+		newWindow.show();
 	});
 })

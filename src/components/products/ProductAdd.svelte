@@ -19,7 +19,10 @@
  				pvttc: 0
  			},
  			tags: [],
- 			barcodes: {}
+ 			images: [],
+ 			barcodes: {},
+ 			isInStock: false,
+ 			stock: {}
  		}
 
 		db.collection('products').add(data)

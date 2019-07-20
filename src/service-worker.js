@@ -44,7 +44,7 @@ self.addEventListener('fetch', event => {
 
 	// always serve static files and bundler-generated assets from cache
 	if (url.host === self.location.host && cached.has(url.pathname)) {
-		event.respondWith(caches.match(event.request));
+		event.respondWith(caches.match(event.request, {ignoreSearch: false}));
 		return;
 	}
 
@@ -72,7 +72,7 @@ self.addEventListener('fetch', event => {
 					cache.put(event.request, response.clone());
 					return response;
 				} catch(err) {
-					const response = await cache.match(event.request);
+					const response = await cache.match(event.request, {ignoreSearch: false});
 					if (response) return response;
 
 					throw err;

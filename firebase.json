@@ -1,6 +1,8 @@
 {
     "functions": {
-        "predeploy": [],
+        "predeploy": [ 
+            "node predeploy.js" 
+        ],
         "source": "functions"
     },
     "firestore": {

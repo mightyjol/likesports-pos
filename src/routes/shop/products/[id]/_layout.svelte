@@ -41,6 +41,7 @@
 			<li><a href={url}>General</a></li>
 			<li><a href={url + 'codes'}>Barcodes</a></li>
 			<li><a href={url + 'images'}>Images</a></li>
+			<li><a href={url + 'stock'}>Stock</a></li>
 			<li><a href={previous}>Back</a></li>
 		</ul>
 	</div>

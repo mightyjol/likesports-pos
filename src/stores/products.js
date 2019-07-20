@@ -4,6 +4,7 @@ import { store as sizes} from './sizes'
 
 export let store =  writable([]);
 
+//TODO rename this to be more abstract - getCodeSet? getCodeSetFromTags
 export function getSizeSet(tags = []){
 	let sizeSets = get(sizes)
 	

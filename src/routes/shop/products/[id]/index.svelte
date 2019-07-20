@@ -56,7 +56,21 @@
 	})
 </script>
 
+<style>
+	.image-container{
+		max-width: 150px;
+		max-height: 150px;
+	}
+</style>
+
 {#if product}
+	{#if product.images.length}
+		<div class="image-container">
+			<figure class="image is-square">
+				<img src={product.images[0].url} width="150" height="150" alt="#">
+			</figure>
+		</div>
+	{/if}
 	product id: { product.id } <br>
 	<div class="field">
 		<label class="label">Ref (optional)</label>

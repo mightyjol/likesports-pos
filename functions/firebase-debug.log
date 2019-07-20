@@ -1,0 +1,97 @@
+[debug] [2019-07-18T09:58:11.116Z] ----------------------------------------------------------------------
+[debug] [2019-07-18T09:58:11.118Z] Command:       D:\nodejs\node.exe C:\Users\jerom\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve --only functions
+[debug] [2019-07-18T09:58:11.118Z] CLI Version:   6.11.0
+[debug] [2019-07-18T09:58:11.118Z] Platform:      win32
+[debug] [2019-07-18T09:58:11.118Z] Node Version:  v10.15.3
+[debug] [2019-07-18T09:58:11.119Z] Time:          Thu Jul 18 2019 11:58:11 GMT+0200 (Central European Summer Time)
+[debug] [2019-07-18T09:58:11.119Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-07-18T09:58:11.125Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-07-18T09:58:11.125Z] > authorizing via signed-in user
+[debug] [2019-07-18T09:58:11.125Z] [iam] checking project pos-v2-d0e73 for permissions ["firebase.projects.get"]
+[debug] [2019-07-18T09:58:11.126Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/pos-v2-d0e73:testIamPermissions  
+
+[debug] [2019-07-18T09:58:11.928Z] <<< HTTP RESPONSE 200
+[debug] [2019-07-18T09:58:11.929Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/pos-v2-d0e73  
+ 
+[debug] [2019-07-18T09:58:12.684Z] <<< HTTP RESPONSE 200
+[info] +  functions: Using node@10 from host.
+[debug] [2019-07-18T09:58:12.689Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/147959146223:getServerAppConfig  
+ 
+[debug] [2019-07-18T09:58:12.926Z] <<< HTTP RESPONSE 200
+[info] +  functions: Emulator started at http://localhost:5000
+[info] i  functions: Watching "D:\sapper\pos\functions" for Cloud Functions...
+[debug] [2019-07-18T09:58:13.209Z] Functions runtime initialized.
+[debug] [2019-07-18T09:58:13.209Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
+[debug] [2019-07-18T09:58:13.667Z] firebase-admin has been stubbed.
+[warn] !  Error: ENOENT: no such file or directory, open 'functions\__sapper__\build\build.json'
+    at Object.openSync (fs.js:438:3)
+    at Object.readFileSync (fs.js:343:35)
+    at get_page_handler (D:\sapper\pos\functions\__sapper__\build\server\server.js:2657:64)
+    at middleware (D:\sapper\pos\functions\__sapper__\build\server\server.js:3082:3)
+    at Object.<anonymous> (D:\sapper\pos\functions\__sapper__\build\server\server.js:3192:2)
+    at Module._compile (internal/modules/cjs/loader.js:701:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:712:10)
+    at Module.load (internal/modules/cjs/loader.js:600:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:539:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:531:3)
+[warn] !  Your function was killed because it raised an unhandled error.
+[debug] [2019-07-18T09:58:28.515Z] ----------------------------------------------------------------------
+[debug] [2019-07-18T09:58:28.517Z] Command:       D:\nodejs\node.exe C:\Users\jerom\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2019-07-18T09:58:28.517Z] CLI Version:   6.11.0
+[debug] [2019-07-18T09:58:28.517Z] Platform:      win32
+[debug] [2019-07-18T09:58:28.517Z] Node Version:  v10.15.3
+[debug] [2019-07-18T09:58:28.518Z] Time:          Thu Jul 18 2019 11:58:28 GMT+0200 (Central European Summer Time)
+[debug] [2019-07-18T09:58:28.518Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-07-18T09:58:28.523Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-07-18T09:58:28.523Z] > authorizing via signed-in user
+[debug] [2019-07-18T09:58:28.523Z] [iam] checking project pos-v2-d0e73 for permissions ["firebase.projects.get"]
+[debug] [2019-07-18T09:58:28.525Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/pos-v2-d0e73:testIamPermissions  
+
+[debug] [2019-07-18T09:58:29.320Z] <<< HTTP RESPONSE 200
+[debug] [2019-07-18T09:58:29.322Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/pos-v2-d0e73  
+ 
+[debug] [2019-07-18T09:58:30.195Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'D:\sapper\pos'...
+[info] 
+[info] +  functions: Using node@10 from host.
+[debug] [2019-07-18T09:58:30.211Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/147959146223/clients/_:getWebAppConfig  
+ 
+[debug] [2019-07-18T09:58:30.212Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/147959146223:getServerAppConfig  
+ 
+[debug] [2019-07-18T09:58:30.459Z] <<< HTTP RESPONSE 200
+[info] +  functions: Emulator started at http://localhost:5001
+[debug] [2019-07-18T09:58:30.749Z] <<< HTTP RESPONSE 200
+[info] i  functions: Watching "D:\sapper\pos\functions" for Cloud Functions...
+[info] i  hosting: Serving hosting files from: static
+[info] +  hosting: Local server: http://localhost:5000
+[debug] [2019-07-18T09:58:31.077Z] Functions runtime initialized.
+[debug] [2019-07-18T09:58:31.077Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
+[debug] [2019-07-18T09:58:31.536Z] firebase-admin has been stubbed.
+[warn] !  Error: ENOENT: no such file or directory, open 'functions\__sapper__\build\build.json'
+    at Object.openSync (fs.js:438:3)
+    at Object.readFileSync (fs.js:343:35)
+    at get_page_handler (D:\sapper\pos\functions\__sapper__\build\server\server.js:2657:64)
+    at middleware (D:\sapper\pos\functions\__sapper__\build\server\server.js:3082:3)
+    at Object.<anonymous> (D:\sapper\pos\functions\__sapper__\build\server\server.js:3192:2)
+    at Module._compile (internal/modules/cjs/loader.js:701:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:712:10)
+    at Module.load (internal/modules/cjs/loader.js:600:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:539:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:531:3)
+[warn] !  Your function was killed because it raised an unhandled error.
+[debug] [2019-07-18T10:00:35.812Z] ----------------------------------------------------------------------
+[debug] [2019-07-18T10:00:35.814Z] Command:       D:\nodejs\node.exe C:\Users\jerom\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2019-07-18T10:00:35.814Z] CLI Version:   6.11.0
+[debug] [2019-07-18T10:00:35.814Z] Platform:      win32
+[debug] [2019-07-18T10:00:35.814Z] Node Version:  v10.15.3
+[debug] [2019-07-18T10:00:35.815Z] Time:          Thu Jul 18 2019 12:00:35 GMT+0200 (Central European Summer Time)
+[debug] [2019-07-18T10:00:35.815Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-07-18T10:00:35.821Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-07-18T10:00:35.821Z] > authorizing via signed-in user
+[debug] [2019-07-18T10:00:35.821Z] [iam] checking project pos-v2-d0e73 for permissions ["firebase.projects.get"]
+[debug] [2019-07-18T10:00:35.822Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/pos-v2-d0e73:testIamPermissions  
+

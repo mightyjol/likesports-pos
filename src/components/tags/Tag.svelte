@@ -13,6 +13,7 @@
 	let { session } = stores()
 	let db = get(session).firestore
  
+ 	//TODO clean size sets for products on cloud functions
  	function deleteTag(){
  		let ref = db.collection(type).doc(doc)
  		

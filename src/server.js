@@ -34,6 +34,10 @@ server.use(helmet({
 			styleSrc: [
 				"'self'",
 				"'unsafe-inline'"
+			],
+			imgSrc: [
+				"'self'",
+				"firebasestorage.googleapis.com"
 			]
 		}
 	}

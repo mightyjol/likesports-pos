@@ -1,38 +1,67 @@
 <script>
 	import { getContext, onMount } from 'svelte'
+	import { stores } from '@sapper/app'
+	import { get } from 'svelte/store'
 	import { store as products, getSizeSet } from '../../../../stores/products'
-	
+	import { FieldValue } from '../../../../firebase/values'
+
 	let { id } = getContext('product')
+	let { session } = stores()
+	let db = get(session).firestore
+
 	let codeInput
 	let barcode = ''
 
 	$: product = $products.find(x => x.id === id)
 	$: sizes = getSizeSet(product.tags)
-	$:console.error(product, product.tags, sizes)
+
 	onMount(() => {
-		setTimeout(() => codeInput.focus(), 3e3)
+		codeInput.focus()
 	})
 
-	function addBarcode(size){
+	function addBarcode(sizeName){
+		if(!barcode.length) return 
 		products.update(p => {
-			p.find(x => x.id === id).barcodes[size] = barcode
+			p.find(x => x.id === id).barcodes[sizeName] = barcode
 			return p
 		})
 
-		//db.collection('products')
+		let update = {}
+		updateKey = "barcodes." + sizeName
+		db.collection('products').doc(id).update({
+			[`barcodes.${sizeName}`]: barcode
+		})
+		.then(() => {})
+		.catch(e => console.error(e))
+
 		barcode = ''
 	}
-</script>
 
-<style>
-</style>
+	function deleteBarcode(sizeName){
+		products.update(p => {
+			p.find(x => x.id === id).barcodes[sizeName] = undefined
+			return p
+		})
+
+		db.collection('products').doc(id).update({
+			[`barcodes.${sizeName}`]: FieldValue.delete()
+		})
+		.then(() => {})
+		.catch(e => console.error(e))
+	}
+</script>
 
 {#if sizes.length}
 	<div class="columns">
 		{#each sizes as size}
-			<div class="column is-narrow">
+			<div class="column is-flex is-narrow">
 				<div on:click={() => addBarcode(size.name)} class="box">
-					{size.name}
+					<p>{size.name}</p>
+					{#if product.barcodes[size.name] != undefined} 
+						<p>{ product.barcodes[size.name] }</p>
+						<button on:click={() => { deleteBarcode(size.name) }} class="button">X</button>
+					{/if}
+					
 				</div>
 			</div>
 		{/each}
@@ -40,5 +69,5 @@
 {:else}
 	This product can have only one size
 {/if}
-<input bind:this={codeInput} bind:value={barcode} type="text">
+<input bind:this={codeInput} bind:value={barcode} on:blur|preventDefault={() => {codeInput.focus()}} type="text">
 

@@ -1,38 +1,26 @@
-<script context="module">
-	export function preload(page, session){
-		let skipper = process.dev ? '/shop/products/X12c7ATeIId1M1A6EvQ4/codes' : '/shop'
-		if(!!session.user) return this.redirect(302, skipper) 
-
-		return {
-			skipper: skipper
-		}
-	}
-</script>
-
 <script>
 	import { onMount } from 'svelte';
 	import { stores, goto } from '@sapper/app'
 
 	let { session } = stores()
 	
-	//skips to specific url for dev purposes	
-	export let skipper 
-	
+	let loadingLogin = false
+	let loadingOffline = false
+
 	let email = 'admin@testing.com'
 	let password = 'testing'
 
 	function login(){
-		let unsub = session.subscribe(s => {
-			if(!!s.user) goto(skipper)
-		})
-
+		loadingLogin = true
 		$session.auth.signInWithEmailAndPassword(email, password)
-		.then(u => {
-			unsub()
-		})
-		.catch(e => {
-			console.error(e)
-		})
+		.then(u => {})
+		.catch(e => console.error(e))
+	}
+
+	function offline(){
+		alert('TODO: implement this')
+		//loadingOffline = true
+		//ipc.send('go-offline'); 
 	}
 
 	function checkForUpdate(){
@@ -41,10 +29,43 @@
 
 </script>
 
-<h1>Login</h1>
-<form>
-	<input bind:value="{email}" type="email">
-	<input bind:value="{password}" type="password">
-	<button type="button" on:click="{login}">Login</button>
-</form>
-<button on:click="{checkForUpdate}">Check for updates</button>
+<div class="hero is-fullheight">
+	<div class="hero-body">
+		<div class="container">
+			<div class="columns is-centered is-vcentered">
+				<div class="column is-narrow has-text-centered">
+					<h1 class="title">
+						<img src="/logo-192.png" width="100px" height="auto" alt="logo">
+					</h1>
+					<h2 class="subtitle">
+						Login
+					</h2>
+					<div class="box">
+						
+						<form>
+							<div class="field">
+								<input bind:value={email} class="input" type="email">
+							</div>
+							<div class="field">
+								<input bind:value={password} class="input" type="password">
+							</div>
+							<div class="field">
+								<button class:is-loading={loadingLogin} on:click={login} class="button is-primary is-fullwidth" type="button" >Login</button>
+							</div>
+						</form>
+					</div>
+					<button on:click={offline} class:is-loading={loadingOffline} class="button is-outlined is-danger">
+						Offline Mode
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="hero-foot has-text-centered">
+		<a href="/changelog">changelog</a>
+	</div>
+	<div class="is-pulled-right">
+		<button on:click="{checkForUpdate}" class="button is-small">Check for updates</button>
+	</div>
+ </div>
+

@@ -4,7 +4,7 @@
 	let { session } = stores()
 
 	function openWindow(name = "pos"){
-		ipc.send('openWindow')
+		ipc.send('open-window', {name: name})
 	}
 
 	function logout(){
