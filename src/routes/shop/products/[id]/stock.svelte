@@ -5,7 +5,6 @@
 	import { get } from 'svelte/store'
 	import { store as products, getSizeSet } from '../../../../stores/products'
 	import { store as inventories } from '../../../../stores/inventories'
-	import { FieldValue } from '../../../../firebase/values'
 	
 	let { id } = getContext('product')
 	let { session } = stores()

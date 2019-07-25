@@ -3,7 +3,6 @@
 	import { stores } from '@sapper/app'
 	import { get } from 'svelte/store'
 	import { store as products, getSizeSet } from '../../../../stores/products'
-	import { FieldValue } from '../../../../firebase/values'
 
 	let { id } = getContext('product')
 	let { session } = stores()
@@ -44,7 +43,7 @@
 		})
 
 		db.collection('products').doc(id).update({
-			[`barcodes.${sizeName}`]: FieldValue.delete()
+			[`barcodes.${sizeName}`]: firebase.firestore.FieldValue.delete()
 		})
 		.then(() => {})
 		.catch(e => console.error(e))

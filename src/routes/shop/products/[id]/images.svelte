@@ -3,7 +3,6 @@
 	import { stores } from '@sapper/app'
 	import { get } from 'svelte/store'
 	import { store as products } from '../../../../stores/products'
-	import { FieldValue } from '../../../../firebase/values'
 	
 	let { id } = getContext('product')
 	let { session } = stores()
@@ -72,7 +71,7 @@
 			let urlPromise = r.getDownloadURL().then(async url => {
 				data.url = url
 				await db.collection('products').doc(id).update({
-					images: FieldValue.arrayUnion(data)
+					images: firebase.firestore.FieldValue.arrayUnion(data)
 				})
 				.then(() => {
 					products.update(p => {

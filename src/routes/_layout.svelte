@@ -5,7 +5,8 @@
 	import { local as settingsLocal } from '../stores/settings.js'
 	import initStores from '../stores/init.js'
 	import Loader from '../components/utils/Loader.svelte'
-	
+	import config from '../../config/firebase.js';
+
 	export let segment
 
 	let skipper = process.dev ? '/shop' : '/shop'
@@ -55,23 +56,26 @@
 		
 		/* FIREBASE LAZY LOADING - this is the best solution i found to allow ssr with firebase*/
 		//keep in mind that this adds +-500kb to the initial chunk
-		let lazy = await import('../firebase/app.js')
-		let firebase = lazy.default
-		
-		let db = firebase.firestore()
-		let storage = firebase.storage()
-		let messaging = firebase.messaging()
+		//let lazy = await import('../firebase/app.js')
+		//let firebase = lazy.default
+
+		let app = firebase.initializeApp(config)
+
+		let auth = app.auth()
+		let db = app.firestore()
+		let storage = app.storage()
+		//let messaging = app.messaging()
 
 		session.set({
-			auth: firebase.auth(),
-			firebase: firebase,
+			firebase: app,
+			auth: auth,
 			firestore: db,
 			storage: storage,
-			messaging: messaging
+			//messaging: messaging
 		})
 
 		/* USER LOG STATE */
-		firebase.auth().onAuthStateChanged(user => {
+		auth.onAuthStateChanged(user => {
 			if (user) {
 			 	db.collection('users').doc(user.uid).get()
 			 	.then(async doc => {
@@ -102,7 +106,12 @@
 					console.error(e)
 				})
 			} else {
-				session.set({})
+				session.update(s => {
+					s.isInitialized = false
+					s.user = undefined
+					s.firestore = firebase.firestore
+					return s
+				})
 			 	
 			 	isInitializing = false
 				goto('/')
@@ -111,14 +120,15 @@
 
 		//TODO implement this for multiple registers
 		/* HANDLE MESSAGING */
+		/*
 		messaging.onMessage((payload) => {
 			console.log('Message received. ', payload);
 			// ...
 		});
-
+		*/
 	})
 </script>
-
+ 
 <main>
 	{#if isLoading}
 		<div class="hero is-fullheight">

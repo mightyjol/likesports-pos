@@ -4,7 +4,6 @@
 	import { store as tags, autocomplete as tagAutocomplete, tagExists, getTagFromName, tagCanBeAdded } from '../../stores/tags'
 	import { get, writable } from 'svelte/store'
  	import { stores } from '@sapper/app'
- 	import { FieldValue } from '../../firebase/values'
  	import Tag from './Tag.svelte'
 	
  	export let store 
@@ -42,7 +41,7 @@
 					return s
 				})
 				ref = ref.update({
-					triggers: FieldValue.arrayUnion(tag.name) 
+					triggers: firebase.firestore.FieldValue.arrayUnion(tag.name) 
 				})
 				.then(() => {})
 				.catch(e => { console.error(e) })
@@ -53,7 +52,7 @@
 					return s
 				})
 				ref = ref.update({
-					tags: FieldValue.arrayUnion(tag.name) 
+					tags: firebase.firestore.FieldValue.arrayUnion(tag.name) 
 				})
 				.then(() => {})
 				.catch(e => { console.error(e) })

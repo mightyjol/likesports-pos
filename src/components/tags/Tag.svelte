@@ -4,7 +4,6 @@
 	import { store as products } from '../../stores/products'
 	import { get } from 'svelte/store'
  	import { stores, goto } from '@sapper/app'
-	import { FieldValue } from '../../firebase/values'
 
  	export let doc
  	export let name
@@ -25,7 +24,7 @@
  				return s
  			})
  			ref.update({
- 				triggers: FieldValue.arrayRemove(name) 
+ 				triggers: firebase.firestore.FieldValue.arrayRemove(name) 
  			})
  			.catch(e => console.error(e))
  		}
@@ -37,7 +36,7 @@
  				return s
  			})
  			ref.update({
- 				tags: FieldValue.arrayRemove(name) 
+ 				tags: firebase.firestore.FieldValue.arrayRemove(name) 
  			})
  			.catch(e => console.error(e))
  		}
