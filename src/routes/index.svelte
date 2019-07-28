@@ -11,6 +11,7 @@
 	let password = 'testing'
 
 	function login(){
+		console.log('logging in')
 		loadingLogin = true
 		$session.auth.signInWithEmailAndPassword(email, password)
 		.then(u => {})

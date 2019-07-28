@@ -1,18 +1,11 @@
 import { get } from 'svelte/store'
-import { stores } from '@sapper/app'
 import { dist as settings, local as localSettings } from './settings.js'
 import { store as inventories } from './inventories.js'
 import { store as products } from './products.js'
 import { store as tagSets } from './tags.js'
 import { store as sizes } from './sizes.js'
 
-async function init(){
-	let { session } = stores()
-	let sessionData = get(session)
-
-	let client_id = sessionData.user.client_id
-	let db  = sessionData.firestore
-
+async function init(client_id, db){
 	let tempSettings = []
 	let tempInventories = []
 	let tempProducts = []

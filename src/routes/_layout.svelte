@@ -9,7 +9,7 @@
 
 	export let segment
 
-	let skipper = process.dev ? '/shop' : '/shop'
+	let skipper = process.dev ? '/local/pos' : '/shop'
 	
 	let { session } = stores()
 
@@ -90,17 +90,14 @@
 							return s
 						})
 						
-						await initStores()
+						await initStores(userData.client_id, $session.firestore)
 			 		}
 			 		else{
 			 			if(process.dev) console.log('skipped session initialisation')
 			 		}
 					
 					isInitializing = false
-
-					if(seg.indexOf('local') === -1){
-						goto(skipper)
-					}
+					goto(skipper)
 				})
 				.catch(e => {
 					console.error(e)
@@ -114,7 +111,8 @@
 				})
 			 	
 			 	isInitializing = false
-				goto('/')
+			 	
+				goto('/')			
 			}
 		});
 
